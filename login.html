@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in · {{TITLE}}</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23e8a84a'/%3E%3Cpath d='M9 8h4v16H9zM15 8h4v16h-4zM21.5 8.6l3.8-1 4 15.4-3.8 1z' fill='%23141210'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#121110;--panel:#1a1917;--panel2:#22201d;--line:#2e2b27;--line2:#3a3631;--text:#ece7df;--muted:#968f84;--faint:#6b655c;--accent:#e8a84a;--accent-ink:#141210;--red:#e5675a;--red-bg:rgba(229,103,90,.14)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text)}
+body{font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:16px;
+  background:radial-gradient(1200px 600px at 50% -10%,rgba(232,168,74,.08),transparent 60%),var(--bg)}
+button,input{font:inherit;color:inherit}
+.card{width:100%;max-width:360px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px 26px 24px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:-.01em}
+.brand i{width:26px;height:26px;border-radius:7px;background:var(--accent);position:relative;flex:none}
+.brand i::after{content:"";position:absolute;inset:7px 6px;border-left:3px solid var(--accent-ink);border-right:3px solid var(--accent-ink)}
+.lead{color:var(--muted);margin:6px 0 22px}
+label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+input{width:100%;height:42px;background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:0 12px;outline:none;margin-bottom:14px}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,168,74,.15)}
+.pw{position:relative}
+.pw input{padding-right:44px}
+.pw button{position:absolute;right:4px;top:4px;width:34px;height:34px;border:0;background:none;color:var(--faint);cursor:pointer;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.pw button:hover{color:var(--text)}
+.pw svg{width:17px;height:17px}
+.go{width:100%;height:42px;border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px}
+.go:hover{filter:brightness(1.07)}
+.go:disabled{opacity:.6;cursor:default}
+.spin{width:15px;height:15px;border:2px solid rgba(20,18,16,.3);border-top-color:var(--accent-ink);border-radius:50%;animation:s .8s linear infinite;display:none}
+.busy .spin{display:block}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{background:var(--red-bg);color:var(--red);border-radius:8px;padding:9px 12px;font-size:13px;margin:0 0 14px;display:none}
+.err.on{display:block}
+.foot{color:var(--faint);font-size:12px;margin-top:16px;text-align:center}
+</style>
+</head>
+<body>
+<form class="card" id="f" autocomplete="on" novalidate>
+  <div class="brand"><i></i>{{TITLE}}</div>
+  <p class="lead">Sign in to manage the media library.</p>
+  <div class="err" id="err" role="alert"></div>
+  <label for="user">Username</label>
+  <input id="user" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+  <label for="pw">Password</label>
+  <div class="pw">
+    <input id="pw" name="password" type="password" autocomplete="current-password" required>
+    <button type="button" id="show" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+  </div>
+  <button class="go" id="go" type="submit"><span class="spin"></span><span>Sign in</span></button>
+  <div class="foot">You stay signed in for 30 days on this browser.</div>
+</form>
+<script>
+const $ = s => document.querySelector(s);
+$('#show').addEventListener('click', () => {
+  const pw = $('#pw'), show = pw.type === 'password';
+  pw.type = show ? 'text' : 'password';
+  $('#show').setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  pw.focus();
+});
+$('#f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const user = $('#user').value.trim(), password = $('#pw').value;
+  const err = $('#err');
+  if (!user || !password) { err.textContent = 'Enter your username and password.'; err.classList.add('on'); return; }
+  $('#go').disabled = true; $('#go').classList.add('busy'); err.classList.remove('on');
+  try {
+    const r = await fetch('api/login', {method: 'POST', headers: {'Content-Type': 'application/json', 'X-Library': '1'},
+                                         body: JSON.stringify({user, password}), credentials: 'same-origin'});
+    if (r.ok) { location.replace('./'); return; }
+    const j = await r.json().catch(() => ({}));
+    err.textContent = j.error || ('Sign-in failed (HTTP ' + r.status + ')');
+    err.classList.add('on');
+    $('#pw').select();
+  } catch (ex) {
+    err.textContent = 'Could not reach the server.'; err.classList.add('on');
+  }
+  $('#go').disabled = false; $('#go').classList.remove('busy');
+});
+</script>
+</body>
+</html>

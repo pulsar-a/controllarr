@@ -1,0 +1,2040 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}}</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23e8a84a'/%3E%3Cpath d='M9 8h4v16H9zM15 8h4v16h-4zM21.5 8.6l3.8-1 4 15.4-3.8 1z' fill='%23141210'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#121110;--panel:#1a1917;--panel2:#22201d;--panel3:#2a2824;--line:#2e2b27;--line2:#3a3631;
+  --text:#ece7df;--muted:#968f84;--faint:#6b655c;
+  --accent:#e8a84a;--accent-ink:#141210;
+  --green:#7fc28e;--green-bg:rgba(127,194,142,.13);
+  --amber:#e8a84a;--amber-bg:rgba(232,168,74,.13);
+  --red:#e5675a;--red-bg:rgba(229,103,90,.14);
+  --blue:#8fb3d9;--blue-bg:rgba(143,179,217,.12);
+  --violet:#b7a0e0;--violet-bg:rgba(183,160,224,.13);
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+header{position:sticky;top:0;z-index:5;background:rgba(18,17,16,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:20px;padding:14px 0 10px}
+.brand{font-weight:700;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.brand i{width:22px;height:22px;border-radius:6px;background:var(--accent);display:inline-block;position:relative}
+.brand i::after{content:"";position:absolute;inset:6px 5px;border-left:3px solid var(--accent-ink);border-right:3px solid var(--accent-ink)}
+.quota{flex:1;max-width:380px;margin-left:auto}
+.quota .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px}
+.quota .lbl b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.meter{height:6px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.meter.hot i{background:var(--red)}
+.iconbtn{background:var(--panel2);border:1px solid var(--line);border-radius:8px;height:34px;padding:0 12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;color:var(--muted);white-space:nowrap}
+.iconbtn:hover{color:var(--text);border-color:var(--line2)}
+.iconbtn svg{width:15px;height:15px}
+.spin svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tab{background:none;border:0;padding:10px 14px 12px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;font-weight:600;white-space:nowrap}
+.tab span{font-weight:400;color:var(--faint);margin-left:6px;font-variant-numeric:tabular-nums}
+.tab.on{color:var(--text);border-color:var(--accent)}
+
+.tools{display:flex;gap:8px;flex-wrap:wrap;padding:12px 0 14px}
+.search{flex:1;min-width:200px;position:relative}
+.search input{width:100%;height:36px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:0 12px 0 34px;outline:none}
+.search input:focus{border-color:var(--accent)}
+.search svg{position:absolute;left:11px;top:10px;width:16px;height:16px;color:var(--faint)}
+select{height:36px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:0 30px 0 10px;appearance:none;cursor:pointer;max-width:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23968f84' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;background-size:12px}
+select:focus{outline:none;border-color:var(--accent)}
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:2px;height:36px}
+.seg button{background:none;border:0;border-radius:6px;padding:0 9px;cursor:pointer;color:var(--faint);display:flex;align-items:center}
+.seg button.on{background:var(--panel3);color:var(--text)}
+.seg svg{width:16px;height:16px}
+
+main{padding:6px 0 120px}
+.summary{color:var(--muted);font-size:13px;margin:4px 0 10px;display:flex;gap:14px;flex-wrap:wrap}
+.summary b{color:var(--text);font-variant-numeric:tabular-nums;font-weight:600}
+h3.sec{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 8px;font-weight:600}
+h3.sec small{text-transform:none;letter-spacing:0;font-weight:400;color:var(--faint);margin-left:8px}
+
+.row{display:grid;grid-template-columns:24px 48px minmax(0,1fr) 150px 130px 112px;gap:14px;align-items:center;padding:10px 12px;border-radius:var(--radius);border:1px solid transparent}
+.row:hover{background:var(--panel)}
+.row.sel{background:var(--panel);border-color:var(--line2)}
+.row + .row{margin-top:2px}
+.row.noposter{grid-template-columns:24px minmax(0,1fr) 150px 130px 112px}
+.poster{width:48px;height:72px;border-radius:5px;background:var(--panel2);object-fit:cover;display:block}
+.poster.none{display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:18px;font-weight:700}
+.title{font-weight:600;font-size:15px;display:flex;align-items:baseline;gap:8px;min-width:0}
+.title .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.title .y{color:var(--faint);font-weight:400;font-size:13px;flex:none}
+.title a.jf{color:var(--faint);flex:none;display:inline-flex;align-self:center;opacity:0;transition:opacity .15s}
+.row:hover .title a.jf{opacity:1}
+.title a.jf:hover{color:var(--accent)}
+.title a.jf svg{width:13px;height:13px}
+.sub{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+.badge{font-size:11px;padding:2px 7px;border-radius:99px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.badge.arr{color:var(--blue);background:var(--blue-bg);border-color:transparent}
+.badge.seed{color:var(--amber);background:var(--amber-bg);border-color:transparent}
+.badge.req{color:var(--violet);background:var(--violet-bg);border-color:transparent}
+.badge.keep{color:var(--green);background:var(--green-bg);border-color:transparent}
+.badge.q{font-variant-numeric:tabular-nums}
+.badge.q.heavy{color:var(--red);background:var(--red-bg);border-color:transparent}
+.badge.warn{color:var(--red);background:var(--red-bg);border-color:transparent}
+.chip{font-size:12px;padding:2px 8px 2px 6px;border-radius:99px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.done::before,.chip.part::before{display:none}
+.chip.dim{opacity:.35}
+.summary .who{color:var(--green)}
+.chip svg{width:13px;height:13px;flex:none}
+.chip.done{color:var(--green);background:var(--green-bg)}
+.chip.part{color:var(--amber);background:var(--amber-bg)}
+.chip.none{color:var(--faint);background:transparent;padding-left:0}
+.chip.none::before{display:none}
+.size{text-align:right;font-variant-numeric:tabular-nums}
+.size b{font-weight:600}
+.size .bar{height:3px;background:var(--panel2);border-radius:9px;margin-top:6px;overflow:hidden}
+.size .bar i{display:block;height:100%;background:var(--muted);border-radius:9px}
+.size small{display:block;color:var(--faint);font-size:11px;margin-top:3px}
+.size small.f{color:var(--amber)}
+.when{color:var(--muted);font-size:12px;text-align:right}
+.when div+div{color:var(--faint)}
+.when .rq,.rq-m{color:var(--violet);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rq svg,.rq-m svg,.card .cr svg{width:12px;height:12px;vertical-align:-2px;margin-right:4px}
+.rq-m{display:none;font-size:12px}
+.stale{display:inline-flex;align-items:center;gap:2px;color:var(--amber);opacity:.75;font-size:11px;font-weight:500;flex:none;align-self:center;font-variant-numeric:tabular-nums;cursor:help}
+.stale svg{width:12px;height:12px}
+.card .cr{color:var(--violet);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .ov .r{display:flex;gap:6px;align-items:center}
+.card .ov .stale{opacity:.9}
+.acts{display:flex;justify-content:flex-end;gap:2px}
+.ib{width:34px;height:34px;border-radius:8px;border:1px solid transparent;background:none;color:var(--faint);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.ib:hover{color:var(--text);background:var(--panel2)}
+.ib.del:hover{color:var(--red);background:var(--red-bg)}
+.ib.kept{color:var(--green)}
+.ib svg{width:17px;height:17px}
+.chk{display:flex;align-items:center;justify-content:center}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;margin:0}
+.expand{background:none;border:0;padding:0;cursor:pointer;color:inherit;text-align:left;min-width:0;display:block;width:100%}
+.caret{display:inline-block;width:14px;color:var(--faint);transition:transform .15s;flex:none}
+.open .caret{transform:rotate(90deg)}
+.seasons{margin:0 0 8px 62px;border-left:1px solid var(--line);padding-left:10px}
+.seasons .row{grid-template-columns:24px minmax(0,1fr) 150px 130px 112px;padding:7px 12px}
+.seasons .title{font-size:14px;font-weight:500}
+.empty{color:var(--muted);text-align:center;padding:60px 0}
+.note{background:var(--amber-bg);color:var(--amber);border-radius:8px;padding:9px 12px;font-size:13px;margin:0 0 12px}
+.note.err{background:var(--red-bg);color:var(--red)}
+.note.info{background:var(--panel);color:var(--muted);border:1px solid var(--line)}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px 14px}
+.card{position:relative;cursor:pointer;border-radius:var(--radius);min-width:0}
+.card .art{position:relative;aspect-ratio:2/3;border-radius:8px;overflow:hidden;background:var(--panel2);border:2px solid transparent}
+.card.sel .art{border-color:var(--accent)}
+.card .art img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+.card:hover .art img{transform:scale(1.03)}
+.card .art .ph{display:flex;align-items:center;justify-content:center;height:100%;font-size:40px;font-weight:700;color:var(--faint)}
+.card .ov{position:absolute;left:0;right:0;bottom:0;padding:22px 8px 7px;background:linear-gradient(transparent,rgba(0,0,0,.85));display:flex;justify-content:space-between;align-items:flex-end;font-size:12px;font-variant-numeric:tabular-nums}
+.card .ov b{font-weight:600}
+.card .dots{display:flex;gap:3px}
+.card .dots i{width:8px;height:8px;border-radius:50%}
+.card .cb{position:absolute;top:7px;left:7px;background:rgba(0,0,0,.55);border-radius:6px;padding:5px;display:flex;opacity:0;transition:opacity .15s}
+.card:hover .cb,.card.sel .cb{opacity:1}
+.card .kp{position:absolute;top:7px;right:7px;background:rgba(0,0,0,.6);border-radius:6px;padding:3px 6px;font-size:11px;color:var(--green)}
+.card .ct{margin-top:7px;font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .cy{color:var(--faint);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* downloads / history rows */
+.drow{display:grid;grid-template-columns:24px minmax(0,1fr) 120px 120px 76px;gap:14px;align-items:center;padding:10px 12px;border-radius:var(--radius);border:1px solid transparent}
+.drow:hover{background:var(--panel)}
+.drow.sel{background:var(--panel);border-color:var(--line2)}
+.drow .name{font-weight:500;word-break:break-word}
+.drow .meta{color:var(--faint);font-size:12px;margin-top:4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)}
+.num b{color:var(--text);font-weight:600;display:block;font-size:14px}
+.hrow{display:grid;grid-template-columns:110px minmax(0,1fr) 100px 140px;gap:14px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.hrow .d{color:var(--muted);font-size:12px}
+.hrow .res{font-size:12px;color:var(--faint);margin-top:3px}
+.hrow .res.bad{color:var(--red)}
+
+/* menu */
+.menu{position:fixed;z-index:12;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:5px;min-width:240px;box-shadow:0 12px 40px rgba(0,0,0,.55);display:none}
+.menu.on{display:block}
+.menu button{display:flex;width:100%;text-align:left;background:none;border:0;padding:8px 10px;border-radius:6px;cursor:pointer;gap:8px;align-items:center}
+.menu button:hover{background:var(--panel3)}
+.menu button small{color:var(--faint);margin-left:auto;font-variant-numeric:tabular-nums}
+.menu button.danger{color:var(--red)}
+.menu button:disabled{opacity:.45;cursor:default}
+.menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+
+/* selection bar */
+.selbar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:10px 10px 10px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 12px 40px rgba(0,0,0,.5);transition:transform .2s;z-index:6;max-width:calc(100% - 32px)}
+.selbar.on{transform:translate(-50%,0)}
+.selbar b{font-variant-numeric:tabular-nums}
+.btn{height:36px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);padding:0 14px;cursor:pointer;font-weight:600;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.danger{background:var(--red);border-color:var(--red);color:#1b0f0d}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger:hover,.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{height:30px;padding:0 10px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:default}
+.link{background:none;border:0;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
+.scrim.on{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line2);border-radius:14px;width:100%;max-width:640px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal.wide{max-width:980px}
+.modal h2{margin:0;font-size:17px;padding:18px 20px 4px}
+.modal .lead{color:var(--muted);padding:0 20px 12px;font-size:13px}
+.modal .body{overflow:auto;padding:0 20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.modal .foot{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:14px 20px;flex-wrap:wrap}
+.modal .foot label{margin-right:auto;display:flex;gap:8px;align-items:center;color:var(--amber);font-size:13px}
+.modal .foot label[hidden]{display:none}
+.modal .field{padding:14px 0 4px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.modal .field label{color:var(--muted);font-size:13px}
+.pl{padding:12px 0;border-bottom:1px solid var(--line)}
+.pl:last-child{border-bottom:0}
+.pl .h{display:flex;justify-content:space-between;gap:12px;font-weight:600}
+.pl .h span{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500;flex:none;text-align:right}
+.pl ul{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+.pl li{margin:2px 0;word-break:break-word}
+.pl .w{color:var(--amber);font-size:12.5px;margin-top:6px}
+.pl .res{font-size:13px;margin-top:6px}
+.pl .res.ok{color:var(--green)}
+.pl .res.bad{color:var(--red)}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--red);color:#1b0f0d;font-weight:600;padding:10px 16px;border-radius:9px;z-index:20;display:none;max-width:calc(100% - 32px)}
+.toast.ok{background:var(--green)}
+
+/* live progress */
+.prog{height:6px;background:var(--panel2);border-radius:99px;overflow:hidden;margin:6px 0 7px}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .35s ease}
+.prog.ok i{background:var(--green)}
+.prog.bad i{background:var(--red)}
+.ptxt{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptxt.ok{color:var(--green)}
+.ptxt.bad{color:var(--red)}
+.steps{list-style:none;padding:0;margin:8px 0 0}
+.steps li{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:4px 8px;font-size:13px;color:var(--faint);padding:3px 0;align-items:start}
+.steps li .tx{word-break:break-word}
+.steps li .dt{color:var(--faint);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.steps li.running{color:var(--text)}
+.steps li.done{color:var(--muted)}
+.steps li.error{color:var(--text)}
+.steps li.error .dt{grid-column:2/4;text-align:left;white-space:normal;color:var(--red)}
+.steps li.skipped .tx{text-decoration:line-through}
+.ic{width:14px;height:14px;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border-radius:50%}
+.ic.p{border:1.5px solid var(--line2)}
+.ic.r{border:2px solid var(--amber-bg);border-top-color:var(--amber);animation:spin .8s linear infinite}
+.ic.d{color:var(--green)}
+.ic.e{color:var(--red)}
+.ic.s{color:var(--faint)}
+
+/* update popover */
+.bpop{position:fixed;z-index:11;width:400px;max-width:calc(100vw - 24px);background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:12px 14px 10px;box-shadow:0 14px 44px rgba(0,0,0,.55);display:none}
+.bpop.on{display:block}
+.bpop .bh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px}
+.bpop .bh span{color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums}
+.bpop .prog{margin:9px 0 4px}
+.bpop .steps{margin-top:6px;max-height:min(60vh,420px);overflow:auto}
+
+/* changes paused while the library updates */
+body.updating :is([data-del],[data-keep],#seldel,[data-restore]){opacity:.35;cursor:not-allowed}
+body.updating .ib:is([data-del],[data-keep]):hover{background:none;color:var(--faint)}
+.modal .foot .busy{color:var(--amber);font-size:13px;margin-right:auto}
+.modal .foot .busy[hidden]{display:none}
+.menu .mnote{color:var(--amber);font-size:12px;padding:6px 10px 4px}
+
+/* live tab */
+.lv-diag{display:flex;flex-direction:column;gap:8px;margin:4px 0 18px}
+.dg{display:grid;grid-template-columns:22px 1fr;gap:2px 10px;padding:11px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
+.dg .ic{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px}
+.dg b{font-weight:600}
+.dg p{grid-column:2;margin:0;color:var(--muted);font-size:13px}
+.dg.critical{border-color:rgba(229,103,90,.45)} .dg.critical .ic{background:var(--red);color:#1b0f0d}
+.dg.warning .ic{background:var(--amber);color:#1b120a}
+.dg.info .ic{background:var(--blue);color:#0d141b}
+.dg.good .ic{background:var(--green);color:#0d1b10}
+.lv-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:8px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px 10px;min-width:0;height:132px;overflow:hidden}
+.tile .lb{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--muted);font-size:12.5px;height:20px}
+.tile .lb > span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tile .lb span.s{flex:none;display:inline-flex;align-items:center;height:20px;line-height:1;font-size:11px;font-weight:600;padding:0 8px;border-radius:99px;white-space:nowrap}
+.s.good{background:var(--green-bg);color:var(--green)} .s.warning{background:var(--amber-bg);color:var(--amber)}
+.s.critical{background:var(--red-bg);color:var(--red)} .s.info{background:var(--blue-bg);color:var(--blue)}
+.tile .v{font-size:24px;font-weight:700;letter-spacing:-.01em;margin:4px 0 0;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .sb{color:var(--faint);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile svg{display:block;width:100%;height:34px;margin-top:8px}
+.stc{display:grid;grid-template-columns:48px minmax(0,1fr) 110px;gap:14px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);margin-bottom:8px}
+.stc .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stc .m{color:var(--muted);font-size:12.5px;margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.stc .m svg{width:13px;height:13px;vertical-align:-2px}
+.stc .q{font-size:12.5px;color:var(--muted);margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.stc .why{font-size:12.5px;color:var(--amber);margin-top:4px}
+.stc .bar{height:3px;background:var(--panel2);border-radius:9px;margin-top:8px;overflow:hidden}
+.stc .bar i{display:block;height:100%;background:var(--muted)}
+.mth{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
+.mth.direct{background:var(--green-bg);color:var(--green)} .mth.remux{background:var(--blue-bg);color:var(--blue)} .mth.conv{background:var(--red-bg);color:var(--red)}
+.jobs{display:flex;flex-direction:column;gap:6px}
+.job{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;border-radius:9px;background:var(--panel);border:1px solid var(--line);font-size:13px}
+.job span{color:var(--muted)}
+.apps{width:100%;border-collapse:collapse;font-size:13px}
+.apps th{text-align:right;color:var(--faint);font-weight:500;padding:6px 10px;border-bottom:1px solid var(--line)}
+.apps th:first-child,.apps td:first-child{text-align:left}
+.apps td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--muted)}
+.apps td:first-child{color:var(--text)}
+.apps tr.hot td{color:var(--text)}
+.charts{display:flex;flex-direction:column;gap:4px}
+.chart{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px 4px}
+.chart .ch{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);margin:0 0 2px 2px}
+.chart .ch b{color:var(--text);font-weight:600}
+.lg{display:flex;gap:12px;font-size:12px;color:var(--muted)}
+.lg i{display:inline-block;width:10px;height:2px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.chart svg{display:block;width:100%;overflow:visible}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ax{fill:var(--faint);font-size:10.5px;font-variant-numeric:tabular-nums}
+.chart .xh{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+.ltip{position:fixed;z-index:30;background:#0b0a09;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font-size:12px;pointer-events:none;display:none;box-shadow:0 6px 20px rgba(0,0,0,.5);min-width:200px}
+.ltip .tt{color:var(--muted);margin-bottom:4px}
+.ltip div.r{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+.ltip div.r span{color:var(--muted)}
+.lv-rsel{height:26px;margin-left:10px;vertical-align:middle;font-size:12px;text-transform:none;letter-spacing:0;padding:0 26px 0 8px;background-position:right 7px center;color:var(--text)}
+.lv-range button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:1px 8px;font-size:11.5px;cursor:pointer;text-transform:none;letter-spacing:0}
+.lv-range button.on{color:var(--text);border-color:var(--line2);background:var(--panel3)}
+.tab .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:6px;vertical-align:1px}
+@media (max-width:820px){.stc{grid-template-columns:40px minmax(0,1fr) 70px}.apps .hide-m{display:none}}
+
+/* load level bar */
+.lvl{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px 14px;margin:4px 0 14px;cursor:pointer;color:inherit}
+.lvl:hover{border-color:var(--line2)}
+.lvl .top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.lvl .ttl{color:var(--muted);font-size:12.5px}
+.lvl .word{font-size:18px;font-weight:700;transition:color .4s}
+.lvl .why{color:var(--muted);font-size:13px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvl .more{color:var(--muted);font-size:12.5px;margin-left:auto;white-space:nowrap}
+.lvl:hover .more{color:var(--text)}
+.lvl .track{position:relative;height:10px;border-radius:99px;margin-top:10px;overflow:hidden;
+  background:linear-gradient(90deg,rgba(127,194,142,.16) 0 40%,rgba(232,200,74,.14) 40% 65%,rgba(232,168,74,.16) 65% 85%,rgba(229,103,90,.18) 85% 100%)}
+.lvl .fill{position:absolute;inset:0 auto 0 0;border-radius:99px;transition:width 1.2s ease,background-color .6s}
+.lvl .ticks{position:relative;height:14px;font-size:10.5px;color:var(--faint)}
+.lvl .ticks span{position:absolute;top:3px;transform:translateX(-50%)}
+.lv-calm{color:var(--green)} .lv-busy{color:#e8c84a} .lv-strained{color:var(--amber)} .lv-over{color:var(--red)}
+.fill.lv-calm{background:var(--green)} .fill.lv-busy{background:#e8c84a} .fill.lv-strained{background:var(--amber)} .fill.lv-over{background:var(--red)}
+.fx{display:grid;grid-template-columns:150px 1fr 120px;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+.fx .b{height:6px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.fx .b i{display:block;height:100%;border-radius:99px}
+.fx span:last-child{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.diag-pop .dg{margin-bottom:8px}
+
+/* stable layout on the Live tab: panels keep their size while numbers change */
+#refresh{min-width:118px;justify-content:center}
+.lvl .word{display:inline-block;min-width:6.4em}
+.lvl .more{flex:none}
+#lv-streams{height:226px;overflow-y:auto;scrollbar-gutter:stable}
+#lv-jobs{height:132px;overflow-y:auto;scrollbar-gutter:stable}
+#lv-streams > .note,#lv-jobs > .note{height:calc(100% - 2px);display:flex;align-items:center;justify-content:center;margin:0}
+.stc{height:104px;overflow:hidden}
+.stc .m,.stc .q,.stc .why{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-wrap:nowrap}
+.stc .q > span:not(.mth){overflow:hidden;text-overflow:ellipsis}
+.stc .why{min-height:17px}
+.stc .bar{visibility:visible}
+.job{height:34px;align-items:center;box-sizing:border-box}
+.job b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.job span{flex:none}
+.apps th{cursor:pointer;user-select:none;white-space:nowrap}
+.apps th:hover{color:var(--text)}
+.apps th.on{color:var(--text)}
+.apps th .ar{display:inline-block;width:10px;color:var(--accent)}
+.apps td{white-space:nowrap}
+
+/* live subtabs */
+.subtabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:0 0 14px}
+.subtabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:8px 12px 10px;cursor:pointer;font-weight:600;font-size:13px}
+.subtabs button.on{color:var(--text);border-color:var(--accent)}
+.subtabs button:hover{color:var(--text)}
+.subtabs span{color:var(--faint);font-weight:400;margin-left:6px;font-variant-numeric:tabular-nums}
+#live section[data-sub]{display:none}
+#live[data-active=overview] section[data-sub=overview],#live[data-active=history] section[data-sub=history],#live[data-active=apps] section[data-sub=apps]{display:block}
+
+/* stream impact */
+.stc{grid-template-columns:48px minmax(0,1fr) 210px}
+.imp{min-width:0}
+.imp-top{display:flex;align-items:baseline;gap:6px;justify-content:flex-end;font-size:12px;color:var(--muted);white-space:nowrap}
+.imp-top b{font-size:16px;color:var(--text);font-variant-numeric:tabular-nums}
+.cls{font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px;margin-right:auto}
+.cls.light{background:var(--green-bg);color:var(--green)} .cls.medium{background:var(--blue-bg);color:var(--blue)}
+.cls.heavy{background:var(--amber-bg);color:var(--amber)} .cls.beast{background:var(--red-bg);color:var(--red)}
+.crown{font-size:11px;font-weight:700;color:var(--red);margin-right:4px}
+.imp-bar{position:relative;height:8px;border-radius:99px;background:var(--panel2);margin:7px 0 5px;overflow:hidden}
+.imp-bar i{position:absolute;inset:0 auto 0 0;border-radius:99px;transition:width .8s ease}
+.imp-bar i.light{background:var(--green)} .imp-bar i.medium{background:var(--blue)} .imp-bar i.heavy{background:var(--amber)} .imp-bar i.beast{background:var(--red)}
+.imp-bar u{position:absolute;top:0;bottom:0;width:1px;background:rgba(0,0,0,.45)}
+.imp-sub{font-size:11.5px;color:var(--faint);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:820px){.stc{grid-template-columns:40px minmax(0,1fr) 120px}}
+
+/* clickable tiles + their detail popup */
+.tile.clk{cursor:pointer;transition:border-color .15s}
+.tile.clk:hover,.tile.clk:focus-visible{border-color:var(--line2);outline:none}
+.tile.clk:hover .lb > span:first-child::after{content:" ›";color:var(--text)}
+.td{padding:12px 0 16px}
+.td-big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.td-big b{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.td-what{color:var(--muted);font-size:13px;margin:6px 0 14px;max-width:760px}
+.td h4{margin:16px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.td-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.td-kv div{background:var(--panel2);border-radius:9px;padding:8px 10px;font-size:12px;color:var(--muted)}
+.td-kv div b{display:block;font-size:16px;color:var(--text);font-variant-numeric:tabular-nums;margin-top:2px}
+.td-why{background:var(--panel2);border-radius:9px;padding:10px 12px;font-size:13px;color:var(--text);margin-top:10px}
+.td-rows{display:flex;flex-direction:column;gap:4px}
+.td-row{display:grid;grid-template-columns:minmax(0,1fr) 160px 90px;gap:10px;align-items:center;font-size:13px}
+.td-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.td-row .b{height:6px;border-radius:99px;background:var(--panel3);overflow:hidden}
+.td-row .b i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.td-row em{font-style:normal;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.td-chart{position:relative;margin-top:6px}
+.td-chart .chart{margin-bottom:6px}
+.td-hint{color:var(--faint);font-size:12px;margin-top:4px}
+
+/* visual disk breakdown */
+.sbar{display:flex;gap:2px;height:16px;border-radius:6px;overflow:hidden;background:var(--panel3)}
+.sbar > i{display:block;height:100%;min-width:0;transition:flex-basis .8s ease}
+.sbar > i.free{background:transparent}
+.sbar > i.na,.sleg i.na{background:repeating-linear-gradient(135deg,rgba(150,143,132,.42) 0 3px,rgba(150,143,132,.10) 3px 7px)}
+.sleg span.na{color:var(--faint)}
+.sleg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:7px;font-size:12px;color:var(--muted)}
+.sleg span{display:inline-flex;align-items:center;gap:6px}
+.sleg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.sleg b{color:var(--text);font-variant-numeric:tabular-nums}
+.vis{background:var(--panel2);border-radius:10px;padding:12px 14px 12px;margin-bottom:10px}
+.vis .vt{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:8px}
+.vis .vt b{font-weight:600}
+.vis .vt span{color:var(--muted);font-size:12px}
+.gauge{position:relative;height:16px;border-radius:6px;overflow:hidden;
+  background:linear-gradient(90deg,rgba(127,194,142,.14) 0 50%,rgba(232,168,74,.18) 50% 75%,rgba(229,103,90,.2) 75% 100%)}
+.gauge > i{position:absolute;inset:0 auto 0 0;border-radius:6px;transition:width .8s ease}
+.gauge > u{position:absolute;top:0;bottom:0;width:1px;background:rgba(0,0,0,.5)}
+.gscale{position:relative;height:16px;font-size:10.5px;color:var(--faint);margin-top:3px}
+.gscale span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.tile .sbar.mini{height:6px;gap:1px;border-radius:3px;margin-top:7px}
+.tile svg.short{height:22px;margin-top:5px}
+
+/* tooltips + help */
+.tip{position:fixed;z-index:30;background:#0b0a09;color:var(--text);border:1px solid var(--line2);padding:6px 9px;border-radius:7px;font-size:12px;line-height:1.4;max-width:300px;pointer-events:none;white-space:pre-line;opacity:0;transition:opacity .12s;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.tip.on{opacity:1}
+.help{padding:6px 0 14px}
+.help h4{margin:16px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.help dl{display:grid;grid-template-columns:170px 1fr;gap:10px 14px;margin:0;align-items:start}
+.help dt{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.help dd{margin:0;color:var(--muted);font-size:13px}
+.help dd b{color:var(--text);font-weight:600}
+.help .ib{width:28px;height:28px;pointer-events:none;color:var(--muted);background:var(--panel2)}
+.help .ib svg{width:15px;height:15px}
+@media (max-width:820px){.help dl{grid-template-columns:1fr;gap:3px}.help dd{margin-bottom:8px}}
+
+@media (max-width:820px){
+  .wrap{padding:0 16px}
+  .top{flex-wrap:wrap;gap:10px}
+  .quota{order:3;max-width:none;flex-basis:100%}
+  .row{grid-template-columns:22px 40px minmax(0,1fr) 72px 34px;gap:10px;padding:9px 6px}
+  .row.noposter,.seasons .row{grid-template-columns:22px minmax(0,1fr) 72px 34px}
+  .poster{width:40px;height:60px}
+  .when{display:none}
+  .rq-m{display:block}
+  .size small,.size .bar{display:none}
+  .acts .ib:not(.more){display:none}
+  .seasons{margin-left:18px}
+  .title{font-size:14px}
+  .drow{grid-template-columns:22px minmax(0,1fr) 80px 34px;gap:10px;padding:9px 6px}
+  .drow .num.hide-m{display:none}
+  .hrow{grid-template-columns:minmax(0,1fr) 80px;gap:10px}
+  .hrow .d,.hrow .num{display:none}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:14px 10px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand"><i></i>{{TITLE}}</div>
+      <div class="quota" id="quota"></div>
+      <button class="iconbtn" id="logout" title="Sign out" aria-label="Sign out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+      <button class="iconbtn" id="help" title="How this page works" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></svg></button>
+      <button class="iconbtn" id="refresh" title="Re-read everything from Jellyfin, Radarr, Sonarr, Seerr and qBittorrent (also happens every 30 min)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.64-6.36M21 4v5h-5"/></svg>
+        <span>Refresh</span>
+      </button>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab on" data-tab="movies">Movies<span id="c-movies"></span></button>
+      <button class="tab" data-tab="shows">TV Shows<span id="c-shows"></span></button>
+      <button class="tab" data-tab="downloads">Downloads<span id="c-downloads"></span></button>
+      <button class="tab" data-tab="history">History</button>
+      <button class="tab" data-tab="live">Live<span id="c-live"></span></button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tools" id="tools">
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search" autocomplete="off">
+    </label>
+    <select id="status" aria-label="Status" data-for="media">
+      <option value="all">Any status</option>
+      <option value="watched">Watched</option>
+      <option value="partial">Partly watched</option>
+      <option value="unwatched">Not watched</option>
+      <option value="kept">Kept / favourites</option>
+      <option value="requested">Requested in Seerr</option>
+      <option value="stale">Unwatched 6+ months</option>
+    </select>
+    <select id="user" aria-label="Viewer" data-for="media"><option value="">By anyone</option></select>
+    <select id="sort" aria-label="Sort" data-for="media">
+      <option value="size">Largest first</option>
+      <option value="frees">Frees most space</option>
+      <option value="gbh">Most GB per hour</option>
+      <option value="lastold">Watched longest ago</option>
+      <option value="added">Recently added</option>
+      <option value="addedold">Oldest added</option>
+      <option value="title">Title A–Z</option>
+    </select>
+    <select id="dsort" aria-label="Sort downloads" data-for="downloads">
+      <option value="size">Largest first</option>
+      <option value="frees">Frees most space</option>
+      <option value="name">Name A–Z</option>
+      <option value="ratio">Highest ratio (torrents)</option>
+      <option value="seed">Seeding longest (torrents)</option>
+      <option value="added">Oldest added (torrents)</option>
+    </select>
+    <select id="dfilter" aria-label="Show" data-for="downloads">
+      <option value="all">Everything</option>
+      <option value="orphan">Not in library</option>
+      <option value="lib">Copies of library items</option>
+    </select>
+    <div class="seg" id="view" data-for="media" role="group" aria-label="View">
+      <button data-view="list" class="on" title="List view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+      <button data-view="grid" title="Poster view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="9" rx="1"/><rect x="3" y="15" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/></svg></button>
+    </div>
+  </div>
+  <main id="main"><div class="empty">Loading library…</div></main>
+</div>
+
+<div class="menu" id="menu"></div>
+<div class="bpop" id="bpop" role="status" aria-live="polite"><div class="bh"><b id="bp-title">Updating the library</b><span id="bp-time"></span></div><div class="prog"><i style="width:0"></i></div><ul class="steps" id="bp-steps"></ul></div>
+
+<div class="selbar" id="selbar">
+  <span><b id="selcount">0</b> selected · frees <b id="selsize">0</b></span>
+  <button class="link" id="selclear" title="Unselect everything">Clear</button>
+  <button class="btn danger" id="seldel" title="Preview and delete everything selected">Delete selected</button>
+</div>
+
+<div class="scrim" id="scrim">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <h2 id="m-title"></h2>
+    <div class="lead" id="m-lead"></div>
+    <div class="body" id="m-body"></div>
+    <div class="foot" id="m-foot">
+      <label id="m-keepok" hidden><input type="checkbox" id="m-keepchk"> <span>Some of these are kept — delete anyway</span></label>
+      <span id="m-busy" class="busy" hidden>Paused while the library updates…</span>
+      <button class="btn" id="m-cancel">Cancel</button>
+      <button class="btn danger" id="m-ok">Delete</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const I = {
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>',
+  more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  unlock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  inbox: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/></svg>',
+  hourglass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 21h12M7 3c0 5 10 5 10 9s-10 4-10 9M17 3c0 5-10 5-10 9"/></svg>',
+  ext: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+};
+const RISKY = /\.(exe|7z|zip|rar|scr|bat|lnk|msi|cmd)$/i;
+
+let DATA = null, TAB = 'movies', HISTORY = null;
+const SEL = new Map();            // key -> {kind,id,size,frees,title,torrents}
+const OPEN = new Set();
+let prefs = {};
+try { prefs = JSON.parse(localStorage.getItem('library-prefs') || '{}'); } catch (e) {}
+const savePrefs = () => { try { localStorage.setItem('library-prefs', JSON.stringify(prefs)); } catch (e) {} };
+
+function fmtSize(b) {
+  if (!b) return '0 GB';
+  const u = ['B','KB','MB','GB','TB']; let i = 0;
+  while (b >= 1024 && i < 4) { b /= 1024; i++; }
+  return (i >= 3 ? b.toFixed(b < 10 ? 2 : 1) : Math.round(b)) + ' ' + u[i];
+}
+function ago(iso) {
+  if (!iso) return '';
+  const s = (Date.now() - new Date(iso)) / 1000;
+  if (s < 3600) return 'just now';
+  if (s < 86400) return Math.round(s / 3600) + 'h ago';
+  const d = s / 86400;
+  if (d < 14) return Math.round(d) + 'd ago';
+  if (d < 60) return Math.round(d / 7) + 'w ago';
+  if (d < 365) return Math.round(d / 30) + ' mo ago';
+  return (d / 365).toFixed(1).replace('.0', '') + ' yr ago';
+}
+const dur = s => s < 3600 ? Math.round(s / 60) + 'm' : s < 86400 ? Math.round(s / 3600) + 'h' : Math.round(s / 86400) + 'd';
+function toast(msg, ok) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast' + (ok ? ' ok' : ''); t.style.display = 'block';
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 5000);
+}
+async function api(path, body) {
+  const r = await fetch(path, body === undefined ? {} : {
+    method: 'POST', headers: {'Content-Type': 'application/json', 'X-Library': '1'}, body: JSON.stringify(body)});
+  const j = await r.json().catch(() => ({error: 'HTTP ' + r.status}));
+  if (r.status === 401 && j.login) { location.replace('login'); throw new Error('Please sign in again'); }
+  if (!r.ok) throw Object.assign(new Error(j.error || ('HTTP ' + r.status)), {status: r.status});
+  return j;
+}
+const jfUrl = id => `/jellyfin/web/#/details?id=${id}${DATA.server_id ? '&serverId=' + DATA.server_id : ''}`;
+const isKept = it => it.kept || (it.favs && it.favs.length);
+const profiles = app => (DATA.profiles || {})[app] || [];
+
+/* ---------- watched state ---------- */
+function viewState(item, user, isMovie) {
+  const entries = user ? (item.watched[user] ? [[user, item.watched[user]]] : []) : Object.entries(item.watched);
+  let full = false, part = false, last = '';
+  for (const [, w] of entries) {
+    if (w.last && w.last > last) last = w.last;
+    if (isMovie) { if (w.p) full = true; else if (w.pct != null) part = true; }
+    else if (item.episodes && w.w >= item.episodes) full = true;
+    else if (w.w || w.ip) part = true;
+  }
+  return {status: full ? 'watched' : part ? 'partial' : 'unwatched', last};
+}
+const shortName = n => String(n || '').includes('@') ? String(n).split('@')[0] : String(n || '');
+function chips(item, isMovie) {
+  const e = Object.entries(item.watched);
+  if (!e.length) return '<span class="chip none">Not watched</span>';
+  return e.sort((a, b) => (b[1].last || '').localeCompare(a[1].last || '')).map(([u, w]) => {
+    let cls, txt;
+    const n = shortName(u);
+    if (isMovie) { cls = w.p ? 'done' : 'part'; txt = w.p ? n : `${n} ${w.pct || 0}%`; }
+    else { const full = item.episodes && w.w >= item.episodes; cls = full ? 'done' : 'part'; txt = full ? n : `${n} ${w.w}/${item.episodes}`; }
+    const tip = `${cls === 'done' ? 'Watched' : 'Partly watched'} by ${u}${w.last ? ' — last played ' + new Date(w.last).toLocaleDateString() : ''}`;
+    const viewer = $('#user').value;
+    return `<span class="chip ${cls}${viewer && viewer !== u ? ' dim' : ''}" title="${esc(tip)}">${I.eye}${esc(txt)}</span>`;
+  }).join('');
+}
+function qualityBadge(q) {
+  if (!q || q.res === '?') return '';
+  const heavy = q.gbh && q.gbh >= 8;
+  const t = [q.res, q.codec, q.hdr].filter(Boolean).join(' ');
+  return `<span class="badge q ${heavy ? 'heavy' : ''}" title="${q.gbh ? q.gbh + ' GB per hour of video' : ''}">${esc(t)}${q.gbh ? ' · ' + q.gbh + ' GB/h' : ''}</span>`;
+}
+function badges(item, top) {
+  let b = '';
+  if (top) b += item.arr ? `<span class="badge arr" title="Managed by ${item.arr.app === 'radarr' ? 'Radarr' : 'Sonarr'}: deleting removes it there too, so it won't download again">${item.arr.app === 'radarr' ? 'Radarr' : 'Sonarr'}</span>` : `<span class="badge" title="Not managed by Radarr/Sonarr — deleted straight from disk">Manual</span>`;
+  b += qualityBadge(item.quality);
+  if (top && isKept(item)) b += `<span class="badge keep">${item.kept ? 'Kept' : ''}${item.kept && item.favs.length ? ' · ' : ''}${item.favs.length ? '♥ ' + esc(item.favs.map(shortName).join(', ')) : ''}</span>`;
+  const extra = [];
+  if (item.torrents && item.torrents.length) extra.push(item.torrents.map(h => DATA.torrents[h] ? `${DATA.torrents[h].name} (ratio ${DATA.torrents[h].ratio})` : h).join('\n'));
+  if (item.leftovers && item.leftovers.length) extra.push('Leftover copies in downloads:\n' + item.leftovers.join('\n'));
+  if (item.torrents && item.torrents.length) b += `<span class="badge seed" title="${esc(extra.join('\n\n'))}">Seeding${item.torrents.length > 1 ? ' ×' + item.torrents.length : ''}</span>`;
+  return b;
+}
+function staleMark(it, isMovie) {
+  if (!it.stale) return '';
+  const tip = isMovie ? 'Nobody has watched it, downloaded over 6 months ago'
+    : `${it.stale} episode${it.stale === 1 ? '' : 's'} nobody has watched, downloaded over 6 months ago (${fmtSize(it.stale_size)})`;
+  return `<span class="stale" title="${esc(tip)}">${I.hourglass}${isMovie ? '' : it.stale}</span>`;
+}
+const reqBy = it => it.requested && it.requested.length ? it.requested.map(shortName).join(', ') : '';
+const reqTip = it => 'Requested in Seerr by ' + (it.requested || []).join(', ');
+function posterSrc(id, w) { return `/jellyfin/Items/${id}/Images/Primary?fillWidth=${w}&fillHeight=${Math.round(w * 1.5)}&quality=80`; }
+function poster(item) {
+  const l = esc((item.title || '?')[0]);
+  if (!item.poster) return `<div class="poster none">${l}</div>`;
+  return `<img class="poster" loading="lazy" alt="" src="${posterSrc(item.id, 96)}" data-l="${l}" onerror="posterFail(this)">`;
+}
+window.posterFail = img => { const d = document.createElement('div'); d.className = img.classList.contains('poster') ? 'poster none' : 'ph'; d.textContent = img.dataset.l || ''; img.replaceWith(d); };
+
+/* ---------- media lists ---------- */
+function mediaList() { return TAB === 'movies' ? DATA.movies : DATA.shows; }
+function filtered() {
+  const isMovie = TAB === 'movies';
+  const q = $('#q').value.trim().toLowerCase(), st = $('#status').value, user = $('#user').value, sort = $('#sort').value;
+  const out = mediaList().map(it => ({it, v: viewState(it, user, isMovie)})).filter(({it, v}) => {
+    if (q && !it.title.toLowerCase().includes(q)) return false;
+    if (st === 'kept') return isKept(it);
+    if (st === 'requested') return it.requested && it.requested.length;
+    if (st === 'stale') return !!it.stale;
+    if (st === 'all') return !user || v.status !== 'unwatched';
+    return v.status === st;
+  });
+  const keptLast = ['size', 'frees', 'gbh', 'lastold'].includes(sort) && st !== 'kept';
+  const by = {
+    size: (a, b) => b.it.size - a.it.size,
+    frees: (a, b) => b.it.frees - a.it.frees,
+    gbh: (a, b) => ((b.it.quality || {}).gbh || 0) - ((a.it.quality || {}).gbh || 0),
+    added: (a, b) => (b.it.added || '').localeCompare(a.it.added || ''),
+    addedold: (a, b) => (a.it.added || '').localeCompare(b.it.added || ''),
+    title: (a, b) => a.it.title.localeCompare(b.it.title),
+    lastold: (a, b) => (a.v.last || '9').localeCompare(b.v.last || '9'),
+  }[sort];
+  return out.sort((a, b) => keptLast && (!!isKept(a.it) !== !!isKept(b.it)) ? (isKept(a.it) ? 1 : -1) : by(a, b));
+}
+function sizeCell(it, maxSize, extra) {
+  const pct = maxSize ? Math.max(2, it.size / maxSize * 100) : 0;
+  const fr = it.frees < it.size * 0.98 ? `<small class="f" title="Space actually released — the rest stays as another hardlinked copy">frees ${fmtSize(it.frees)}</small>` : '';
+  return `<div class="size"><b>${fmtSize(it.size)}</b>${fr}${extra ? `<small>${extra}</small>` : ''}${maxSize ? `<div class="bar"><i style="width:${pct}%"></i></div>` : ''}</div>`;
+}
+function actionsCell(key, it) {
+  const kind = key.split(':')[0];
+  const keepBtn = kind === 'season' ? '' : `<button class="ib ${it.kept ? 'kept' : ''}" data-keep="${key}" title="${it.kept ? 'Kept: click to remove the Keep mark' : 'Keep: protect from cleanup (sorted last, extra confirmation to delete)'}">${it.kept ? I.lock : I.unlock}</button>`;
+  return `<div class="acts">${keepBtn}<button class="ib more" data-menu="${key}" title="More: replace with a smaller copy, delete watched episodes, open in Jellyfin">${I.more}</button><button class="ib del" title="${kind === 'season' ? 'Delete this season' : 'Delete'} (shows a preview first)" data-del="${key}">${I.trash}</button></div>`;
+}
+function seasonRows(show) {
+  return '<div class="seasons">' + show.seasons.map(se => {
+    const k = 'season:' + se.id, sv = viewState(se, $('#user').value, false);
+    return `<div class="row noposter ${SEL.has(k) ? 'sel' : ''}" data-key="${k}">
+      <label class="chk"><input type="checkbox" ${SEL.has(k) ? 'checked' : ''} aria-label="Select ${esc(se.name)}"></label>
+      <div style="min-width:0"><div class="title"><span class="t">${esc(se.name)}</span><span class="y">${se.episodes} ep</span>${staleMark(se, false)}</div>
+        <div class="sub">${badges(se, false)}${chips(se, false)}</div></div>
+      ${sizeCell(se, 0, se.ew ? `${se.ew} watched by all` : '')}
+      <div class="when">${sv.last ? 'Watched ' + ago(sv.last) : ''}</div>
+      ${actionsCell(k, se)}
+    </div>`;
+  }).join('') + '</div>';
+}
+function rowHtml(it, v, isMovie, maxSize, forceOpen) {
+  const key = (isMovie ? 'movie:' : 'show:') + it.id;
+  const open = forceOpen || OPEN.has(it.id);
+  const titleBlock = `
+    <div class="title">${isMovie || forceOpen ? '' : '<span class="caret">▶</span>'}<span class="t">${esc(it.title)}</span><span class="y">${it.year || ''}</span>${staleMark(it, isMovie)}<a class="jf" href="${jfUrl(it.id)}" target="_blank" rel="noopener" title="Open in Jellyfin">${I.ext}</a></div>
+    <div class="sub">${badges(it, true)}${chips(it, isMovie)}</div>${reqBy(it) ? `<div class="rq-m" title="${esc(reqTip(it))}">${I.inbox}${esc(reqBy(it))}</div>` : ''}`;
+  let h = `<div class="row ${SEL.has(key) ? 'sel' : ''} ${open ? 'open' : ''}" data-key="${key}">
+    <label class="chk"><input type="checkbox" ${SEL.has(key) ? 'checked' : ''} aria-label="Select ${esc(it.title)}"></label>
+    ${poster(it)}
+    ${isMovie || forceOpen ? `<div style="min-width:0">${titleBlock}</div>` : `<button class="expand" data-toggle="${it.id}">${titleBlock}</button>`}
+    ${sizeCell(it, maxSize, isMovie ? '' : `${it.episodes} ep · ${it.seasons.length} season${it.seasons.length === 1 ? '' : 's'}`)}
+    <div class="when"><div>${v.last ? 'Watched ' + ago(v.last) : ''}</div><div>Added ${ago(it.added)}</div>${reqBy(it) ? `<div class="rq" title="${esc(reqTip(it))}">${I.inbox}${esc(reqBy(it))}</div>` : ''}</div>
+    ${actionsCell(key, it)}
+  </div>`;
+  if (!isMovie && open) h += seasonRows(it);
+  return h;
+}
+function cardHtml(it, v, isMovie) {
+  const key = (isMovie ? 'movie:' : 'show:') + it.id;
+  const dots = Object.entries(it.watched).map(([u, w]) => {
+    const full = isMovie ? w.p : (it.episodes && w.w >= it.episodes);
+    return `<i title="${esc(u)}" style="background:var(--${full ? 'green' : 'amber'})"></i>`;
+  }).join('');
+  const l = esc((it.title || '?')[0]);
+  return `<div class="card ${SEL.has(key) ? 'sel' : ''}" data-key="${key}" data-detail="${key}">
+    <div class="art">${it.poster ? `<img loading="lazy" alt="" src="${posterSrc(it.id, 300)}" data-l="${l}" onerror="posterFail(this)">` : `<div class="ph">${l}</div>`}
+      <label class="cb" title="Select for bulk delete"><input type="checkbox" ${SEL.has(key) ? 'checked' : ''} aria-label="Select ${esc(it.title)}"></label>
+      ${isKept(it) ? `<span class="kp">${it.kept ? 'Kept' : '♥'}</span>` : ''}
+      <div class="ov"><b>${fmtSize(it.size)}</b><span class="r">${staleMark(it, isMovie)}<span class="dots">${dots}</span></span></div>
+    </div>
+    <div class="ct" title="${esc(it.title)}">${esc(it.title)}</div>
+    <div class="cy">${it.year || ''}${it.quality && it.quality.res !== '?' ? ' · ' + esc(it.quality.res) : ''}${!isMovie ? ' · ' + it.episodes + ' ep' : ''}</div>
+    ${reqBy(it) ? `<div class="cr" title="${esc(reqTip(it))}">${I.inbox}${esc(reqBy(it))}</div>` : ''}
+  </div>`;
+}
+function notes() {
+  let h = '';
+  if (DATA.qbit && DATA.qbit !== 'ok') h += `<div class="note">qBittorrent not connected (${esc(DATA.qbit)}). Torrents and leftover download copies won't be removed, so hardlinked files keep using space.</div>`;
+  if (DATA.seerr && DATA.seerr !== 'ok' && DATA.seerr !== 'not configured') h += `<div class="note">Seerr not reachable (${esc(DATA.seerr)}).</div>`;
+  if (window.BUILD_ERR) h += `<div class="note err">Last refresh failed: ${esc(window.BUILD_ERR)}</div>`;
+  return h;
+}
+function renderMedia() {
+  const isMovie = TAB === 'movies';
+  const rows = filtered();
+  const total = rows.reduce((s, r) => s + r.it.size, 0), frees = rows.reduce((s, r) => s + r.it.frees, 0);
+  const maxSize = Math.max(0, ...mediaList().map(i => i.size));
+  let h = notes();
+  const viewer = $('#user').value, st = $('#status').value;
+  const whoLabel = {all: 'watched or started', watched: 'watched', partial: 'partly watched', unwatched: 'not watched'}[st];
+  const whose = !viewer || !whoLabel ? '' : `<span class="who">${whoLabel} by <b>${esc(shortName(viewer))}</b></span>`;
+  h += `<div class="summary"><span><b>${rows.length}</b> ${isMovie ? 'movies' : 'shows'}</span>${whose}<span><b>${fmtSize(total)}</b> on disk</span>${frees < total * 0.98 ? `<span>deleting all would free <b>${fmtSize(frees)}</b></span>` : ''}${DATA.built_at ? `<span>Updated ${ago(new Date(DATA.built_at * 1000).toISOString())}</span>` : ''}</div>`;
+  if (!rows.length) h += '<div class="empty">Nothing matches.</div>';
+  else if (prefs.view === 'grid') h += '<div class="grid">' + rows.map(({it, v}) => cardHtml(it, v, isMovie)).join('') + '</div>';
+  else h += rows.map(({it, v}) => rowHtml(it, v, isMovie, maxSize)).join('');
+  $('#main').innerHTML = h;
+}
+
+/* ---------- downloads ---------- */
+function renderDownloads() {
+  const dl = DATA.downloads || {torrents: [], untracked: []};
+  const q = $('#q').value.trim().toLowerCase(), f = $('#dfilter').value;
+  const match = x => (!q || x.name.toLowerCase().includes(q)) && (f === 'all' || (f === 'orphan' ? !x.items.length : x.items.length));
+  const ds = $('#dsort').value;
+  const tsort = {size: (a, b) => b.size - a.size, frees: (a, b) => b.pure - a.pure || b.size - a.size, name: (a, b) => a.name.localeCompare(b.name),
+                 ratio: (a, b) => b.ratio - a.ratio, seed: (a, b) => (b.seeding_time || 0) - (a.seeding_time || 0), added: (a, b) => (a.added_on || 0) - (b.added_on || 0)}[ds];
+  const usort = {frees: (a, b) => b.frees - a.frees || b.size - a.size, name: (a, b) => a.name.localeCompare(b.name)}[ds] || ((a, b) => b.size - a.size);
+  const ts = dl.torrents.filter(match).sort(tsort);
+  const us = dl.untracked.filter(match).sort(usort);
+  let h = notes();
+  h += `<div class="summary"><span><b>${dl.torrents.length}</b> torrents</span><span><b>${dl.untracked.length}</b> leftover copies</span><span>orphans free <b>${fmtSize(dl.untracked.filter(u => !u.items.length).reduce((s, u) => s + u.frees, 0) + dl.torrents.filter(t => !t.items.length).reduce((s, t) => s + t.pure, 0))}</b></span></div>`;
+  h += `<h3 class="sec">Torrents in qBittorrent<small>removing one also deletes its downloaded data, never the library copy</small></h3>`;
+  h += ts.length ? ts.map(t => {
+    const k = 'torrent:' + t.hash;
+    return `<div class="drow ${SEL.has(k) ? 'sel' : ''}" data-key="${k}">
+      <label class="chk"><input type="checkbox" ${SEL.has(k) ? 'checked' : ''}></label>
+      <div><div class="name">${esc(t.name)}</div><div class="meta">
+        ${t.items.length ? `<span class="badge arr">In library: ${esc(t.items.join(', '))}</span>` : '<span class="badge seed">Not in library</span>'}
+        <span class="badge">${esc(t.state)}${t.progress < 1 ? ' ' + Math.round(t.progress * 100) + '%' : ''}</span>
+        ${t.category ? `<span class="badge">${esc(t.category)}</span>` : ''}${t.tracker ? `<span>${esc(t.tracker)}</span>` : ''}
+        <span>added ${ago(new Date(t.added_on * 1000).toISOString())}</span></div></div>
+      <div class="num hide-m"><b>${t.ratio}</b>ratio · ${dur(t.seeding_time || 0)} seeding</div>
+      <div class="num"><b>${fmtSize(t.size)}</b>frees ${fmtSize(t.pure)}</div>
+      <div class="acts"><button class="ib del" data-del="${k}" title="Remove this torrent and its downloaded data">${I.trash}</button></div>
+    </div>`;
+  }).join('') : '<div class="note info">No torrents match.</div>';
+  h += `<h3 class="sec">Leftover copies<small>files in the download folders that no torrent uses any more</small></h3>`;
+  h += us.length ? us.map(u => {
+    const k = 'file:' + u.path;
+    return `<div class="drow ${SEL.has(k) ? 'sel' : ''}" data-key="${esc(k)}">
+      <label class="chk"><input type="checkbox" ${SEL.has(k) ? 'checked' : ''}></label>
+      <div><div class="name">${esc(u.name)}</div><div class="meta">
+        ${RISKY.test(u.name) ? '<span class="badge warn" title="Video releases never come as programs or archives — this is very likely malware. Do not open it.">Suspicious file</span>' : ''}
+        ${u.items.length ? `<span class="badge arr" title="Hardlinked to the library copy: deleting this alone frees nothing, deleting the library item later frees the space">Copy of: ${esc(u.items.join(', '))}</span>` : '<span class="badge seed">Not in library</span>'}</div></div>
+      <div class="num hide-m"></div>
+      <div class="num"><b>${fmtSize(u.size)}</b>frees ${fmtSize(u.frees)}</div>
+      <div class="acts"><button class="ib del" data-del="${esc(k)}" title="Delete this leftover copy">${I.trash}</button></div>
+    </div>`;
+  }).join('') : '<div class="note info">No leftover copies.</div>';
+  $('#main').innerHTML = h;
+}
+
+/* ---------- history ---------- */
+async function loadHistory() {
+  try { HISTORY = await api('api/history'); } catch (e) { toast(e.message); HISTORY = []; }
+  if (TAB === 'history') renderHistory();
+}
+function renderHistory() {
+  if (!HISTORY) { $('#main').innerHTML = '<div class="empty">Loading…</div>'; return; }
+  const q = $('#q').value.trim().toLowerCase();
+  const list = HISTORY.filter(h => !q || h.title.toLowerCase().includes(q));
+  const what = h => ({movie: 'Movie', show: 'Show', season: 'Season', torrent: 'Torrent', file: 'Leftover copy'}[h.kind] || h.kind) +
+    (h.mode === 'watched' ? ' · watched episodes' : h.mode === 'replace' ? ' · replaced' : '');
+  let h = list.length ? '' : '<div class="empty">Nothing deleted yet.</div>';
+  h += list.map(x => `<div class="hrow">
+    <div class="d">${new Date(x.ts * 1000).toLocaleString([], {dateStyle: 'medium', timeStyle: 'short'})}</div>
+    <div><div style="font-weight:600">${esc(x.title)}${x.year ? ` <span style="color:var(--faint);font-weight:400">${x.year}</span>` : ''}</div>
+      <div class="res">${esc(what(x))}${x.done && x.done.length ? ' — ' + esc(x.done.join(' · ')) : ''}</div>
+      ${x.errors && x.errors.length ? `<div class="res bad">${esc(x.errors.join(' · '))}</div>` : ''}
+      ${x.restored ? `<div class="res" style="color:var(--green)">Brought back ${ago(new Date(x.restored * 1000).toISOString())}: ${esc(x.restore_msg || '')}</div>` : ''}</div>
+    <div class="num"><b>${fmtSize(x.size)}</b></div>
+    <div style="text-align:right">${x.restorable && !x.restored ? `<button class="btn sm" data-restore="${x.uid}" title="Ask Radarr/Sonarr to download it again">Get it back</button>` : ''}</div>
+  </div>`).join('');
+  $('#main').innerHTML = h;
+}
+
+/* ---------- render ---------- */
+function render() {
+  if (!DATA) return;
+  const media = TAB === 'movies' || TAB === 'shows';
+  $('#tools').style.display = TAB === 'live' ? 'none' : '';
+  $$('[data-for=media]').forEach(e => e.style.display = media ? '' : 'none');
+  $$('[data-for=downloads]').forEach(e => e.style.display = TAB === 'downloads' ? '' : 'none');
+  $('#q').placeholder = media ? 'Search titles' : TAB === 'downloads' ? 'Search downloads' : 'Search history';
+  $$('#view button').forEach(b => b.classList.toggle('on', b.dataset.view === (prefs.view || 'list')));
+  if (media) renderMedia(); else if (TAB === 'downloads') renderDownloads(); else if (TAB === 'live') renderLive(); else renderHistory();
+  $('#c-movies').textContent = DATA.movies.length;
+  $('#c-shows').textContent = DATA.shows.length;
+  const dl = DATA.downloads || {torrents: [], untracked: []};
+  $('#c-downloads').textContent = dl.torrents.length + dl.untracked.length;
+  const qd = DATA.quota;
+  if (qd) {
+    const p = qd.used / qd.limit * 100;
+    $('#quota').innerHTML = `<div class="lbl"><span>Disk</span><span><b>${fmtSize(qd.used)}</b> of ${fmtSize(qd.limit)} · ${fmtSize(Math.max(0, qd.limit - qd.used))} free</span></div><div class="meter ${p > 92 ? 'hot' : ''}"><i style="width:${Math.min(100, p)}%"></i></div>`;
+  }
+  renderSel();
+}
+function renderSel() {
+  let frees = 0; const hashes = new Set();
+  for (const s of SEL.values()) { frees += s.frees || 0; (s.torrents || []).forEach(h => hashes.add(h)); }
+  for (const h of hashes) frees += (DATA.torrents[h] || {}).pure || 0;
+  $('#selcount').textContent = SEL.size;
+  $('#selsize').textContent = fmtSize(frees);
+  $('#selbar').classList.toggle('on', SEL.size > 0);
+}
+
+function lookup(key) {
+  const i = key.indexOf(':'), kind = key.slice(0, i), id = key.slice(i + 1);
+  if (kind === 'movie') { const m = DATA.movies.find(x => x.id === id); return m && {kind, id, item: m, size: m.size, frees: m.frees, torrents: m.torrents, title: m.title}; }
+  if (kind === 'show') { const s = DATA.shows.find(x => x.id === id); return s && {kind, id, item: s, size: s.size, frees: s.frees, torrents: s.torrents, title: s.title}; }
+  if (kind === 'season') {
+    const show = DATA.shows.find(x => x.id === id.split(':')[0]);
+    const se = show && show.seasons.find(x => x.id === id);
+    return se && {kind, id, item: se, show, size: se.size, frees: se.frees, torrents: se.torrents, title: `${show.title} — ${se.name}`};
+  }
+  const dl = DATA.downloads || {torrents: [], untracked: []};
+  if (kind === 'torrent') { const t = dl.torrents.find(x => x.hash === id); return t && {kind, id, item: t, size: t.size, frees: t.pure, title: t.name}; }
+  if (kind === 'file') { const u = dl.untracked.find(x => x.path === id); return u && {kind, id, item: u, size: u.size, frees: u.frees, title: u.name}; }
+}
+
+/* ---------- modal plumbing ---------- */
+let PENDING = [], MODE = 'delete', ONOK = null;
+function openModal({title, lead, body, ok, okClass, wide, keepGate}) {
+  $('#m-title').textContent = title;
+  $('#m-lead').textContent = lead || '';
+  $('#m-lead').style.display = lead ? '' : 'none';
+  $('#m-body').innerHTML = body;
+  $('#modal').classList.toggle('wide', !!wide);
+  $('#m-ok').textContent = ok || 'Delete';
+  $('#m-ok').className = 'btn ' + (okClass || 'danger');
+  $('#m-ok').style.display = ok === null ? 'none' : '';
+  $('#m-ok').disabled = true;
+  $('#m-cancel').disabled = false;
+  $('#m-cancel').textContent = ok === null ? 'Close' : 'Cancel';
+  $('#m-keepok').hidden = !keepGate; $('#m-keepchk').checked = false;
+  MODALKIND = null; $('#m-busy').hidden = true;
+  $('#scrim').classList.add('on');
+}
+const closeModal = () => { $('#scrim').classList.remove('on'); ONOK = null; };
+function gateOk() {
+  const items = PENDING.filter(p => !p.skip);
+  $('#m-ok').disabled = UPDATING || !items.length || items.some(p => p.loading) || (!$('#m-keepok').hidden && !$('#m-keepchk').checked);
+  $('#m-busy').hidden = !UPDATING;
+}
+
+/* ---------- delete / watched / replace for media ---------- */
+async function openAction(keys, mode, profile) {
+  MODE = mode;
+  let items = keys.map(lookup).filter(Boolean);
+  items = items.filter((it, _, all) => !(it.kind === 'season' && all.some(o => o.kind === 'show' && it.id.startsWith(o.id + ':'))));
+  const media = items.filter(i => ['movie', 'show', 'season'].includes(i.kind));
+  const dls = items.filter(i => ['torrent', 'file'].includes(i.kind));
+  if (!items.length) return;
+  if (dls.length && !media.length) return openDownloadDelete(dls);
+  if (dls.length) { toast('Delete library items and downloads separately'); return; }
+  PENDING = media.map(i => ({...i, loading: true}));
+  const kept = PENDING.some(p => isKept(p.kind === 'season' ? p.show : p.item));
+  const one = PENDING.length === 1;
+  const verb = mode === 'replace' ? 'Replace' : 'Delete';
+  let body = '';
+  if (mode === 'replace') {
+    const it = PENDING[0], app = it.kind === 'movie' ? 'radarr' : 'sonarr';
+    const arr = it.kind === 'season' ? it.show.arr : it.item.arr;
+    const cur = arr && arr.profile;
+    const opts = profiles(app).map(p => `<option value="${p.id}" ${p.id === (profile || cur) ? 'selected' : ''}>${esc(p.name)}${p.id === cur ? ' (current)' : ''}</option>`).join('');
+    const q = it.item.quality || {};
+    body += `<div class="field"><label for="m-profile">Now ${esc([q.res, q.codec].filter(Boolean).join(' '))}${q.gbh ? ', ' + q.gbh + ' GB/h' : ''} — get a new copy with</label><select id="m-profile">${opts}</select></div>
+      <div class="w" id="m-samep" style="color:var(--amber);font-size:12.5px;padding-bottom:6px" ${cur ? '' : 'hidden'}>This is the current profile, so the new copy may be just as big. Pick a lower one (e.g. HD-720p), or cap sizes in ${app === 'radarr' ? 'Radarr' : 'Sonarr'} → Settings → Quality.</div>`;
+  }
+  body += PENDING.map((it, i) => `<div class="pl" id="pl-${i}"><div class="h"><div>${esc(it.title)}</div><span>${fmtSize(mode === 'watched' ? it.item.ews : it.size)}</span></div><ul><li>Checking…</li></ul></div>`).join('');
+  openModal({
+    title: mode === 'replace' ? `Replace “${PENDING[0].title}” with a smaller copy` : mode === 'watched' ? `Delete watched episodes of “${PENDING[0].title}”?` : one ? `Delete “${PENDING[0].title}”?` : `Delete ${PENDING.length} items?`,
+    lead: '', body, ok: verb, okClass: 'danger', keepGate: kept && mode !== 'replace',
+  });
+  ONOK = runAction; MODALKIND = 'action';
+  const sel = $('#m-profile');
+  if (sel) {
+    const it = PENDING[0], arr = it.kind === 'season' ? it.show.arr : it.item.arr;
+    const same = () => { $('#m-samep').hidden = !(arr && String(arr.profile) === sel.value); };
+    same();
+    sel.addEventListener('change', () => { same(); PENDING.forEach(p => p.loading = true); planAll(); });
+  }
+  planAll();
+}
+async function planAll() {
+  gateOk();
+  const profile = $('#m-profile') ? $('#m-profile').value : null;
+  let frees = 0;
+  await Promise.all(PENDING.map(async (it, i) => {
+    const el = $('#pl-' + i);
+    el.querySelectorAll('.w').forEach(w => w.remove());
+    try {
+      const p = await api('api/plan', {kind: it.kind, id: it.id, mode: MODE, profile});
+      it.skip = false; it.plan = p;
+      el.querySelector('ul').innerHTML = p.steps.map(s => `<li>${esc(s)}</li>`).join('');
+      const warns = [...p.warnings, ...(p.kept.length ? ['This is ' + p.kept.join(' and ')] : [])];
+      if (warns.length) el.insertAdjacentHTML('beforeend', warns.map(w => `<div class="w">${esc(w)}</div>`).join(''));
+      el.querySelector('.h span').textContent = MODE === 'replace' ? fmtSize(p.size) : `${fmtSize(p.size)} · frees ${fmtSize(p.frees)}`;
+      frees += p.frees;
+    } catch (e) {
+      el.querySelector('ul').innerHTML = `<li style="color:var(--red)">${esc(e.message)}</li>`;
+      it.skip = true;
+    }
+    it.loading = false;
+  }));
+  $('#m-lead').style.display = '';
+  $('#m-lead').textContent = MODE === 'replace' ? 'The current copy is deleted now; the new one downloads in the background.' : `Frees about ${fmtSize(frees)}. This can't be undone, but History can ask Radarr/Sonarr to download it again.`;
+  gateOk();
+}
+async function runAction() {
+  MODALKIND = 'running';
+  $('#m-ok').disabled = true; $('#m-cancel').disabled = true; $('#m-ok').textContent = 'Working…';
+  $('#m-keepok').hidden = true;
+  const profile = $('#m-profile') ? $('#m-profile').value : null;
+  if ($('#m-profile')) $('#m-profile').disabled = true;
+  const items = PENDING.filter(p => !p.skip);
+  let failed = 0;
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i], el = $('#pl-' + PENDING.indexOf(it));
+    try {
+      const j = await followJob(startWhenFree('api/delete', {kind: it.kind, id: it.id, mode: MODE, profile}), el, i, items.length);
+      if (!j.ok) failed++;
+      if (MODE === 'delete' && j.ok) removeLocal(it);
+    } catch (e) { el.insertAdjacentHTML('beforeend', `<div class="res bad">✗ ${esc(e.message)}</div>`); failed++; }
+    SEL.delete(it.kind + ':' + it.id);
+  }
+  finishRun(failed);
+}
+function finishRun(failed) {
+  setProgress(1, failed ? `Finished, but ${failed} item${failed > 1 ? 's' : ''} had problems — see the red steps.` : 'All done.', failed ? 'bad' : 'ok');
+  $('#m-cancel').disabled = false; $('#m-cancel').textContent = 'Close'; $('#m-ok').style.display = 'none';
+  HISTORY = null;
+  render();
+  setTimeout(load, 1500);
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const STEP_IC = {pending: '<span class="ic p"></span>', running: '<span class="ic r"></span>', done: '<span class="ic d">✓</span>',
+                 error: '<span class="ic e">✕</span>', skipped: '<span class="ic s">–</span>'};
+function renderSteps(el, job) {
+  let ul = el.querySelector('ul.steps');
+  if (!ul) {
+    el.querySelectorAll('ul,.w,.res').forEach(x => x.remove());
+    el.insertAdjacentHTML('beforeend', '<ul class="steps"></ul>');
+    ul = el.querySelector('ul.steps');
+  }
+  // Patch only the steps that changed, so a running spinner keeps its animation between polls.
+  job.steps.forEach((s, i) => {
+    const html = `${STEP_IC[s.state]}<span class="tx">${esc(s.text)}</span><span class="dt">${esc(s.detail || '')}${s.secs >= 1 ? ` · ${s.secs}s` : ''}</span>`;
+    let li = ul.children[i];
+    if (!li) { li = document.createElement('li'); ul.appendChild(li); }
+    if (li.dataset.sig === html) return;
+    li.dataset.sig = html;
+    li.className = s.state;
+    if (s.state === 'skipped') li.title = 'Skipped because an earlier step failed';
+    li.innerHTML = html;
+    if (s.state === 'running') li.scrollIntoView({block: 'nearest'});
+  });
+  while (ul.children.length > job.steps.length) ul.lastChild.remove();
+}
+function setProgress(frac, text, cls) {
+  const lead = $('#m-lead');
+  lead.style.display = '';
+  if (!lead.querySelector('.prog')) lead.innerHTML = '<div class="prog"><i style="width:0"></i></div><div class="ptxt"></div>';
+  lead.querySelector('.prog').className = 'prog ' + (cls || '');
+  lead.querySelector('.prog i').style.width = Math.round(frac * 100) + '%';
+  const t = lead.querySelector('.ptxt');
+  t.className = 'ptxt ' + (cls || '');
+  t.textContent = text;
+}
+async function startWhenFree(path, body) {
+  for (;;) {
+    try { return await api(path, body); }
+    catch (e) {
+      if (e.status !== 409) throw e;
+      $('#m-lead').querySelector('.ptxt') ? $('#m-lead').querySelector('.ptxt').textContent = 'Waiting for the library update to finish…' : setProgress(0, 'Waiting for the library update to finish…');
+      await sleep(2000);
+    }
+  }
+}
+async function followJob(start, el, idx, count) {
+  const {job} = await start;
+  for (;;) {
+    const j = await api('api/job?id=' + job);
+    renderSteps(el, j);
+    const n = j.steps.length || 1, k = j.steps.filter(s => s.state !== 'pending' && s.state !== 'running').length;
+    const cur = j.steps.find(s => s.state === 'running');
+    if (!j.finished) setProgress((idx + k / n) / count,
+      `${count > 1 ? `Item ${idx + 1} of ${count} · ` : ''}Step ${Math.min(k + 1, n)} of ${n}${cur ? ' — ' + cur.text : ''}`);
+    if (j.finished) return j;
+    await sleep(350);
+  }
+}
+function removeLocal(it) {
+  if (it.kind === 'movie') DATA.movies = DATA.movies.filter(m => m.id !== it.id);
+  else if (it.kind === 'show') DATA.shows = DATA.shows.filter(s => s.id !== it.id);
+  else if (it.kind === 'season') {
+    const show = DATA.shows.find(s => s.id === it.id.split(':')[0]);
+    if (show) {
+      show.seasons = show.seasons.filter(s => s.id !== it.id);
+      show.size = Math.max(0, show.size - it.size); show.episodes -= it.item.episodes;
+    }
+  }
+}
+
+/* ---------- downloads delete ---------- */
+function openDownloadDelete(items) {
+  PENDING = items.map(i => ({...i}));
+  const total = items.reduce((s, i) => s + (i.frees || 0), 0);
+  const body = PENDING.map((it, i) => {
+    const steps = it.kind === 'torrent'
+      ? [it.item.in_media ? 'Remove the torrent from qBittorrent, keeping its files (they are inside the library)' : 'Remove the torrent from qBittorrent and delete its downloaded data']
+      : ['Delete from the downloads folder'];
+    if (it.item.items.length) steps.push('The library copy of ' + it.item.items.join(', ') + ' stays');
+    return `<div class="pl" id="pl-${i}"><div class="h"><div>${esc(it.title)}</div><span>${fmtSize(it.size)} · frees ${fmtSize(it.frees)}</span></div><ul>${steps.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>`;
+  }).join('');
+  openModal({title: items.length === 1 ? `Delete “${items[0].title}”?` : `Delete ${items.length} downloads?`,
+             lead: `Frees about ${fmtSize(total)}. This can't be undone.`, body, ok: 'Delete'});
+  MODALKIND = 'downloads';
+  $('#m-ok').disabled = UPDATING; $('#m-busy').hidden = !UPDATING;
+  ONOK = async () => {
+    MODALKIND = 'running';
+    $('#m-ok').disabled = true; $('#m-cancel').disabled = true; $('#m-ok').textContent = 'Working…';
+    const hashes = PENDING.filter(p => p.kind === 'torrent').map(p => p.id);
+    const paths = PENDING.filter(p => p.kind === 'file').map(p => p.id);
+    $('#m-body').innerHTML = '<div class="pl" id="pl-job"></div>';
+    let failed = 0;
+    try {
+      const j = await followJob(startWhenFree('api/downloads/delete', {hashes, paths}), $('#pl-job'), 0, 1);
+      failed = j.steps.filter(s => s.state === 'error').length;
+      const dl = DATA.downloads;
+      if (!failed) {
+        dl.torrents = dl.torrents.filter(t => !hashes.includes(t.hash));
+        dl.untracked = dl.untracked.filter(u => !paths.includes(u.path));
+      }
+    } catch (e) { $('#pl-job').insertAdjacentHTML('beforeend', `<div class="res bad">✗ ${esc(e.message)}</div>`); failed = 1; }
+    PENDING.forEach(p => SEL.delete(p.kind + ':' + p.id));
+    finishRun(failed);
+  };
+}
+
+/* ---------- detail (grid click) ---------- */
+function openDetail(key) {
+  const it = lookup(key); if (!it) return;
+  const isMovie = it.kind === 'movie';
+  const v = viewState(it.item, $('#user').value, isMovie);
+  openModal({title: it.title, body: `<div id="detail" style="padding:8px 0">${rowHtml(it.item, v, isMovie, 0, true)}</div>`, ok: null, wide: true});
+}
+
+/* ---------- menu ---------- */
+function openMenu(btn, key) {
+  const it = lookup(key); if (!it) return;
+  const m = $('#menu');
+  const media = it.kind !== 'season' ? it.item : it.show;
+  let h = '';
+  if (it.kind !== 'season') h += `<button data-act="jf"><span>Open in Jellyfin</span></button>`;
+  const canReplace = it.kind === 'movie' ? profiles('radarr').length : profiles('sonarr').length;
+  h += `<button data-act="replace" ${canReplace ? '' : 'disabled'}><span>Replace with a smaller copy…</span>${it.item.quality && it.item.quality.gbh ? `<small>${it.item.quality.gbh} GB/h</small>` : ''}</button>`;
+  if (it.kind !== 'movie') h += `<button data-act="watched" ${it.item.ew ? '' : 'disabled'} title="Episodes every viewer of this show has finished"><span>Delete watched episodes</span><small>${it.item.ew ? it.item.ew + ' · ' + fmtSize(it.item.ewf) : 'none'}</small></button>`;
+  if (it.kind !== 'season') h += `<button data-act="keep"><span>${media.kept ? 'Unmark Keep' : 'Mark as Keep'}</span></button>`;
+  h += `<hr><button class="danger" data-act="delete"><span>Delete…</span><small>frees ${fmtSize(it.frees)}</small></button>`;
+  m.innerHTML = h;
+  if (UPDATING) {
+    m.querySelectorAll('button[data-act]:not([data-act=jf])').forEach(b => b.disabled = true);
+    m.insertAdjacentHTML('afterbegin', `<div class="mnote">${PAUSED}</div>`);
+  }
+  m.dataset.key = key;
+  m.classList.add('on');
+  const r = btn.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
+  m.style.left = Math.max(8, Math.min(window.innerWidth - mw - 8, r.right - mw)) + 'px';
+  m.style.top = (r.bottom + mh + 8 > window.innerHeight ? r.top - mh - 4 : r.bottom + 4) + 'px';
+}
+const closeMenu = () => $('#menu').classList.remove('on');
+$('#menu').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b || b.disabled) return;
+  const key = $('#menu').dataset.key, it = lookup(key); closeMenu();
+  if (!it) return;
+  const act = b.dataset.act;
+  if (act === 'jf') window.open(jfUrl(it.id), '_blank', 'noopener');
+  else if (act === 'keep') toggleKeep(key);
+  else if (act === 'replace') openAction([key], 'replace');
+  else if (act === 'watched') openAction([key], 'watched');
+  else openAction([key], 'delete');
+});
+document.addEventListener('click', e => { if (!e.target.closest('#menu') && !e.target.closest('[data-menu]')) closeMenu(); });
+window.addEventListener('scroll', closeMenu, {passive: true});
+
+async function toggleKeep(key) {
+  if (UPDATING) return busyToast();
+  const it = lookup(key); if (!it) return;
+  const val = !it.item.kept;
+  try { await api('api/keep', {kind: it.kind, id: it.id, keep: val}); it.item.kept = val; render(); if ($('#detail')) openDetail(key); }
+  catch (e) { toast(e.message); }
+}
+
+/* ---------- load ---------- */
+const REFRESH_TIP = 'Re-read everything from Jellyfin, Radarr, Sonarr, Seerr and qBittorrent (also happens every 30 min)';
+let UPDATING = false, MODALKIND = null;
+const MUT_SEL = '[data-del],[data-keep],#seldel,[data-restore]';
+const PAUSED = 'Paused while the library updates';
+function busyToast() { toast('Changes are paused while the library updates — hover Updating… to see progress'); }
+function onUpdatingChange(building) {
+  closeMenu();
+  const open = $('#scrim').classList.contains('on');
+  $('#m-busy').hidden = !(open && building && (MODALKIND === 'action' || MODALKIND === 'downloads'));
+  if (!open) return;
+  if (MODALKIND === 'action') { if (building) $('#m-ok').disabled = true; else { PENDING.forEach(p => p.loading = true); planAll(); } }
+  if (MODALKIND === 'downloads') $('#m-ok').disabled = building;
+}
+function setRefreshState(building) {
+  if (UPDATING !== building) {
+    UPDATING = building;
+    document.body.classList.toggle('updating', building);
+    onUpdatingChange(building);
+  }
+  const btn = $('#refresh');
+  btn.removeAttribute('title');
+  btn.classList.toggle('spin', building);
+  btn.querySelector('span').textContent = building ? 'Updating…' : 'Refresh';
+  btn.dataset.tip = building ? '' : REFRESH_TIP;          // while updating, hovering shows the step list instead
+  btn.setAttribute('aria-label', building ? 'Updating — show progress' : REFRESH_TIP);
+  if (building && btn.matches(':hover')) showBuildPop();
+}
+let LIB_V = '';
+async function load() {
+  try {
+    const r = await api('api/library' + (LIB_V && DATA ? '?v=' + encodeURIComponent(LIB_V) : ''));
+    window.BUILD_ERR = r.error;
+    setRefreshState(r.building);
+    if (r.version) LIB_V = r.version;
+    if (r.same) {
+      // nothing changed on the server: skip the download and the redraw
+    } else if (r.data) {
+      const users = r.data.users || [];
+      if ($('#user').options.length - 1 !== users.length) {
+        $('#user').innerHTML = '<option value="">By anyone</option>' + users.map(u => `<option value="${esc(u)}">${esc(shortName(u))}</option>`).join('');
+        if (prefs.user && users.includes(prefs.user)) $('#user').value = prefs.user;
+      }
+      DATA = r.data;
+      for (const k of [...SEL.keys()]) { const x = lookup(k); if (x) SEL.set(k, x); else SEL.delete(k); }
+      if (!$('#scrim').classList.contains('on')) render(); else renderSel();
+    } else if (!r.building && r.error) {
+      $('#main').innerHTML = `<div class="note err">Could not read the library: ${esc(r.error)}</div>`;
+    } else {
+      $('#main').innerHTML = '<div class="empty">Reading the library for the first time — this can take a few minutes on a busy disk…</div>';
+    }
+    if (r.building) setTimeout(load, 4000);
+  } catch (e) { toast(e.message); setTimeout(load, 10000); }
+}
+
+/* ---------- events ---------- */
+function setTab(t) {
+  TAB = t; prefs.tab = t; savePrefs();
+  $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  if (t === 'history' && !HISTORY) loadHistory();
+  if (t === 'live') setTimeout(pollLive, 0);
+  render();
+}
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) setTab(b.dataset.tab); });
+for (const id of ['status', 'user', 'sort', 'dfilter', 'dsort']) {
+  const el = $('#' + id);
+  if (prefs[id]) el.value = prefs[id];
+  el.addEventListener('change', () => { prefs[id] = el.value; savePrefs(); render(); });
+}
+$('#view').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; prefs.view = b.dataset.view; savePrefs(); render(); });
+$('#q').addEventListener('input', render);
+
+function onListClick(e) {
+  if (e.target.closest('a.jf')) return;
+  if (UPDATING && e.target.closest(MUT_SEL)) return busyToast();
+  const del = e.target.closest('[data-del]');
+  if (del) return openAction([del.dataset.del], 'delete');
+  const keep = e.target.closest('[data-keep]');
+  if (keep) return toggleKeep(keep.dataset.keep);
+  const menu = e.target.closest('[data-menu]');
+  if (menu) { e.stopPropagation(); return $('#menu').classList.contains('on') && $('#menu').dataset.key === menu.dataset.menu ? closeMenu() : openMenu(menu, menu.dataset.menu); }
+  const rs = e.target.closest('[data-restore]');
+  if (rs) return restore(rs);
+  const tog = e.target.closest('[data-toggle]');
+  if (tog) { const id = tog.dataset.toggle; OPEN.has(id) ? OPEN.delete(id) : OPEN.add(id); return render(); }
+  const card = e.target.closest('[data-detail]');
+  if (card && !e.target.closest('.cb')) return openDetail(card.dataset.detail);
+}
+function onListChange(e) {
+  if (e.target.type !== 'checkbox' || e.target.id === 'm-keepchk') return;
+  const row = e.target.closest('[data-key]'); if (!row) return;
+  const key = row.dataset.key;
+  if (e.target.checked) { const it = lookup(key); if (it) SEL.set(key, it); } else SEL.delete(key);
+  row.classList.toggle('sel', e.target.checked);
+  renderSel();
+}
+$('#main').addEventListener('click', onListClick);
+$('#main').addEventListener('change', onListChange);
+$('#m-body').addEventListener('click', e => { if (!e.target.closest('[data-del],[data-menu],[data-keep]') || $('#m-ok').style.display !== 'none') return; onListClick(e); });
+$('#m-body').addEventListener('change', e => { if ($('#detail')) { onListChange(e); render(); } });
+$('#m-keepchk').addEventListener('change', gateOk);
+
+async function restore(btn) {
+  if (UPDATING) return busyToast();
+  btn.disabled = true; btn.textContent = 'Working…';
+  try { const r = await api('api/restore', {uid: btn.dataset.restore}); toast(r.msg, true); await loadHistory(); }
+  catch (e) { toast(e.message); btn.disabled = false; btn.textContent = 'Get it back'; }
+}
+
+$('#selclear').addEventListener('click', () => { SEL.clear(); render(); });
+$('#seldel').addEventListener('click', () => UPDATING ? busyToast() : openAction([...SEL.keys()], 'delete'));
+$('#m-cancel').addEventListener('click', closeModal);
+$('#m-ok').addEventListener('click', () => ONOK && ONOK());
+$('#scrim').addEventListener('click', e => { if (e.target.id === 'scrim' && !$('#m-cancel').disabled) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenu(); if (!$('#m-cancel').disabled) closeModal(); } });
+$('#refresh').addEventListener('click', async () => {
+  if (isBuilding()) { BP.open ? hideBuildPopSoon() : showBuildPop(); return; }
+  try {
+    await api('api/refresh', {}); HISTORY = null; if (TAB === 'history') loadHistory();
+    setRefreshState(true);
+    if ($('#refresh').matches(':hover')) showBuildPop();
+    setTimeout(load, 800);
+  } catch (e) { toast(e.message); }
+});
+/* ---------- tooltips: every title="" becomes a styled tooltip ---------- */
+const TIP = document.createElement('div'); TIP.className = 'tip'; TIP.setAttribute('role', 'tooltip'); document.body.appendChild(TIP);
+let tipEl = null, tipT = null;
+function hideTip() { clearTimeout(tipT); tipEl = null; TIP.classList.remove('on'); }
+function showTip(el) {
+  TIP.textContent = UPDATING && el.matches(MUT_SEL) ? PAUSED : el.dataset.tip; TIP.classList.add('on');
+  const r = el.getBoundingClientRect(), w = TIP.offsetWidth, h = TIP.offsetHeight;
+  let top = r.top - h - 7; if (top < 4) top = r.bottom + 7;
+  TIP.style.left = Math.max(6, Math.min(innerWidth - w - 6, r.left + r.width / 2 - w / 2)) + 'px';
+  TIP.style.top = top + 'px';
+}
+document.addEventListener('mouseover', e => {
+  const el = e.target.closest('[title],[data-tip]');
+  if (el === tipEl) return;
+  hideTip();
+  if (!el) return;
+  if (el.hasAttribute('title')) {
+    const t = el.getAttribute('title'); el.removeAttribute('title');
+    if (t && !el.hasAttribute('aria-label') && /^(BUTTON|A|LABEL)$/.test(el.tagName)) el.setAttribute('aria-label', t);
+    if (t) el.dataset.tip = t;
+  }
+  if (!el.dataset.tip) return;
+  tipEl = el; tipT = setTimeout(() => showTip(el), 300);
+});
+document.addEventListener('mouseout', e => { if (tipEl && !tipEl.contains(e.relatedTarget)) hideTip(); });
+document.addEventListener('mousedown', hideTip);
+window.addEventListener('scroll', hideTip, {passive: true});
+
+/* ---------- update progress popover (hover Refresh while it updates) ---------- */
+const BP = {open: false, timer: null, hideT: null, wasBuilding: false};
+function placeBuildPop() {
+  const r = $('#refresh').getBoundingClientRect(), pop = $('#bpop');
+  pop.style.top = (r.bottom + 8) + 'px';
+  pop.style.left = Math.max(12, Math.min(innerWidth - pop.offsetWidth - 12, r.right - pop.offsetWidth)) + 'px';
+}
+function renderBuildPop(r) {
+  const b = r.build; if (!b) return;
+  const n = b.steps.length || 1, k = b.steps.filter(x => x.state !== 'pending' && x.state !== 'running').length;
+  const secs = Math.round(((b.finished || Date.now() / 1000) - b.started));
+  const failed = b.steps.some(x => x.state === 'error');
+  $('#bp-title').textContent = r.building ? 'Updating the library' : (failed ? 'Update finished with problems' : 'Library updated');
+  $('#bp-time').textContent = r.building ? `step ${Math.min(k + 1, n)} of ${n} · ${secs}s` : `took ${secs}s`;
+  const bar = $('#bpop .prog');
+  bar.className = 'prog ' + (r.building ? '' : failed ? 'bad' : 'ok');
+  bar.querySelector('i').style.width = Math.round((r.building ? k / n : 1) * 100) + '%';
+  renderSteps($('#bpop'), b);
+}
+async function pollBuild() {
+  clearTimeout(BP.timer);
+  if (!BP.open) return;
+  try {
+    const r = await api('api/build');
+    renderBuildPop(r);
+    if (BP.wasBuilding && !r.building) load();       // pick up the fresh data right away
+    BP.wasBuilding = r.building;
+  } catch (e) {}
+  BP.timer = setTimeout(pollBuild, 700);
+}
+function showBuildPop() {
+  clearTimeout(BP.hideT);
+  if (BP.open) return;
+  BP.open = true; BP.wasBuilding = true;
+  hideTip(); closeMenu();
+  $('#bpop').classList.add('on'); placeBuildPop();
+  pollBuild();
+}
+function hideBuildPopSoon() {
+  clearTimeout(BP.hideT);
+  BP.hideT = setTimeout(() => { BP.open = false; clearTimeout(BP.timer); $('#bpop').classList.remove('on'); }, 250);
+}
+const isBuilding = () => $('#refresh').classList.contains('spin');
+$('#refresh').addEventListener('mouseenter', () => { if (isBuilding()) showBuildPop(); });
+$('#refresh').addEventListener('mouseleave', hideBuildPopSoon);
+$('#bpop').addEventListener('mouseenter', () => clearTimeout(BP.hideT));
+$('#bpop').addEventListener('mouseleave', hideBuildPopSoon);
+window.addEventListener('resize', () => BP.open && placeBuildPop());
+document.addEventListener('click', e => { if (BP.open && !e.target.closest('#bpop,#refresh')) hideBuildPopSoon(); });
+
+/* ---------- live: who is doing what, and what is loading the server ---------- */
+const LIVE = {now: null, fields: null, rows: [], timer: null, range: 3600, hoverT: null};
+const LVL = {critical: ['!', 'Problem'], warning: ['!', 'Busy'], info: ['i', 'Note'], good: ['✓', 'OK']};
+const fmtRate = b => b == null ? '—' : b >= 1048576 ? (b / 1048576).toFixed(b >= 10485760 ? 0 : 1) + ' MB/s' : b >= 1024 ? Math.round(b / 1024) + ' KB/s' : '0 KB/s';
+const col = k => LIVE.fields ? LIVE.fields.indexOf(k) : -1;
+function seriesOf(k) { const i = col(k); return LIVE.rows.map(r => [r[0], r[i]]); }
+function lvl(v, warn, crit) { return v == null ? 'info' : v >= crit ? 'critical' : v >= warn ? 'warning' : 'good'; }
+
+async function pollLive() {
+  clearTimeout(LIVE.timer);
+  if (TAB !== 'live' || document.hidden) return;
+  try {
+    const since = LIVE.rows.length ? LIVE.rows[LIVE.rows.length - 1][0] : 0;
+    const r = await api('api/live?since=' + since);
+    LIVE.now = r.now; LIVE.fields = r.points.fields;
+    for (const row of r.points.rows) if (!LIVE.rows.length || row[0] > LIVE.rows[LIVE.rows.length - 1][0]) LIVE.rows.push(row);
+    const cut = Date.now() / 1000 - 86400;
+    while (LIVE.rows.length && LIVE.rows[0][0] < cut) LIVE.rows.shift();
+    if (TAB === 'live') renderLive();
+  } catch (e) { const el = $('#lv-err'); if (el) { el.textContent = e.message; el.style.display = ''; } }
+  LIVE.timer = setTimeout(pollLive, 3000);
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && TAB === 'live') pollLive(); });
+
+function sparkline(k, max) {
+  const since = Date.now() / 1000 - 3600, pts = seriesOf(k).filter(p => p[0] >= since && p[1] != null);
+  if (pts.length < 2) return '<svg viewBox="0 0 200 34"></svg>';
+  const hi = max || Math.max(1, ...pts.map(p => p[1])) * 1.1;
+  const x = t => (t - since) / 3600 * 200, y = v => 32 - Math.min(v, hi) / hi * 30;
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + x(p[0]).toFixed(1) + ' ' + y(p[1]).toFixed(1)).join('');
+  return `<svg viewBox="0 0 200 34" preserveAspectRatio="none" aria-hidden="true"><path d="${d} L${x(pts[pts.length - 1][0]).toFixed(1)} 34 L${x(pts[0][0]).toFixed(1)} 34Z" fill="var(--accent)" opacity=".1"/><path d="${d}" fill="none" stroke="var(--accent)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function tile(key, label, value, sub, status, statusText, spark, extra) {
+  return `<div class="tile clk" data-tile="${key}" role="button" tabindex="0" title="Click for what's behind this number and its history"><div class="lb"><span>${label}</span><span class="s ${status}">${statusText}</span></div><div class="v">${value}</div><div class="sb" title="${esc(sub.replace(/<[^>]+>/g, ''))}">${sub}</div>${extra || ''}${spark}</div>`;
+}
+
+function renderLive() {
+  if (!document.getElementById('live')) {
+    $('#main').innerHTML = `<div id="live">
+      <div class="note err" id="lv-err" style="display:none"></div>
+      <button class="lvl" id="lv-level" type="button" title="Click for details">
+        <div class="top"><span class="ttl">Server load</span><span class="word" id="lv-word">Measuring…</span><span class="why" id="lv-why"></span><span class="more">What's going on? ›</span></div>
+        <div class="track"><div class="fill" id="lv-fill" style="width:0"></div></div>
+        <div class="ticks"><span style="left:20%">calm</span><span style="left:52.5%">busy</span><span style="left:75%">strained</span><span style="left:92.5%">overloaded</span></div>
+      </button>
+      <nav class="subtabs" id="lv-sub" role="tablist">
+        <button data-sub="overview" role="tab">Overview</button>
+        <button data-sub="history" role="tab">History</button>
+        <button data-sub="apps" role="tab">Apps &amp; jobs<span id="lv-jobcount"></span></button>
+      </nav>
+      <section data-sub="overview">
+        <div class="lv-tiles" id="lv-tiles"></div>
+        <h3 class="sec">Watching now<small id="lv-scount"></small></h3><div id="lv-streams"></div>
+      </section>
+      <section data-sub="history">
+        <h3 class="sec" style="margin-top:4px">Server history<select class="lv-rsel" id="lv-range" aria-label="Time span">
+          <option value="60">Last minute</option><option value="300">Last 5 minutes</option><option value="900">Last 15 minutes</option>
+          <option value="1800">Last 30 minutes</option><option value="3600">Last hour</option><option value="21600">Last 6 hours</option>
+          <option value="86400">Last 24 hours</option><option value="604800">Last 7 days</option><option value="2592000">Last 30 days</option>
+        </select><small>hover a chart to compare the same moment everywhere</small></h3>
+        <div class="charts" id="lv-charts"></div>
+      </section>
+      <section data-sub="apps">
+        <h3 class="sec" style="margin-top:4px">Background jobs<small>things that read lots of files</small></h3><div id="lv-jobs"></div>
+        <h3 class="sec">Apps on your account<small>CPU: 100% = one full processor core · click a column to sort</small></h3><div id="lv-apps"></div>
+      </section>
+    </div>`;
+    const showSub = k => {
+      $('#live').dataset.active = k; prefs.liveSub = k; savePrefs();
+      $$('#lv-sub button').forEach(b => { b.classList.toggle('on', b.dataset.sub === k); b.setAttribute('aria-selected', b.dataset.sub === k); });
+      if (k === 'history') drawCharts();
+    };
+    $('#lv-sub').addEventListener('click', e => { const b = e.target.closest('button[data-sub]'); if (b) showSub(b.dataset.sub); });
+    showSub(['overview', 'history', 'apps'].includes(prefs.liveSub) ? prefs.liveSub : 'overview');
+    $('#lv-level').addEventListener('click', openDiag);
+    if (prefs.liveRange) LIVE.range = +prefs.liveRange;
+    $('#lv-range').value = String(LIVE.range);
+    $('#lv-range').addEventListener('change', e => { LIVE.range = +e.target.value; prefs.liveRange = LIVE.range; savePrefs(); LIVE.long = null; hideHover(); drawCharts(); fetchLong(); });
+  }
+  if (LIVE.range > RAW_SPAN && (!LIVE.long || LIVE.long.span !== LIVE.range || Date.now() - LIVE.long.at > 60000)) fetchLong();
+  const n = LIVE.now;
+  if (!n) return;
+  $('#lv-err').style.display = 'none';
+
+  // one steady load bar; the explanation lives in a popup
+  renderLevel(n);
+
+  // headline tiles
+  const dk = n.disk, mine = n.my_io.r + n.my_io.w, tot = (dk.r || 0) + (dk.w || 0);
+  const playing = (n.streams || []).filter(s => !s.paused), conv = playing.filter(s => s.converting).length;
+  const mbps = playing.reduce((a, s) => a + ((s.converting && s.out && s.out.mbps) || s.src.mbps || 0), 0);
+  const qb = n.qbit || {};
+  const ds = lvl(dk.busy, 60, 85), ps = lvl(n.psi.io, 15, 35), cs = lvl(n.load.pct, 60, 85);
+  setIfChanged('#lv-tiles', [
+    tile('disk', 'Shared disk', dk.busy == null ? '—' : Math.round(dk.busy) + '% busy',
+         `${fmtRate(tot)} total · yours ${fmtRate(mine)}`, ds, {good: 'OK', warning: 'Busy', critical: 'Overloaded', info: '…'}[ds],
+         sparkline('disk_busy', 100).replace('<svg ', '<svg class="short" '),
+         (() => { const sp = diskSplit(n); return sectionBar([{label: Others() + ' — not yours', v: sp.others, na: true}, {label: 'Your apps', v: sp.you, color: C_YOU}, {label: 'Idle', v: sp.free, free: true}], true); })()),
+    tile('psi', 'Waiting on disk', n.psi.io == null ? '—' : n.psi.io.toFixed(0) + '% of the time',
+         'how often programs stall on disk (whole server)', ps, {good: 'OK', warning: 'Some waiting', critical: 'Lots of waiting', info: '…'}[ps], sparkline('io_psi', 100)),
+    tile('stream', 'Streaming', `${playing.length} playing`,
+         `${mbps.toFixed(1)} Mbit/s${conv ? ` · ${conv} converting` : ''}${(n.streams || []).length > playing.length ? ` · ${(n.streams || []).length - playing.length} paused` : ''}`,
+         conv ? 'warning' : 'good', conv ? 'Converting' : playing.length ? 'Direct' : 'Idle', sparkline('stream_mbps')),
+    tile('qbit', 'qBittorrent', `↑ ${fmtRate(qb.up)}`, `↓ ${fmtRate(qb.down)} · ${n.qb_active ?? '?'} active torrent${n.qb_active === 1 ? '' : 's'}`,
+         (qb.up || 0) >= 15728640 ? 'warning' : 'good', (qb.up || 0) >= 15728640 ? 'Heavy upload' : 'OK', sparkline('qb_up')),
+    tile('cpu', 'Server CPU (shared)', n.load.pct.toFixed(0) + '% used', `load ${n.load.avg[0].toFixed(1)} on ${n.load.cores} cores`,
+         cs, {good: 'OK', warning: 'Busy', critical: 'Overloaded', info: '…'}[cs], sparkline('load', 100)),
+  ].join(''));
+
+  // who is watching
+  const ss = sortStreams(n.streams || []);
+  const totMbps = ss.filter(x => !x.paused).reduce((a, x) => a + streamMbps(x), 0);
+  const heaviest = ss.filter(x => !x.paused).length >= 2 ? ss[0] : null;
+  { const t = n.jellyfin_error ? 'Jellyfin did not answer: ' + n.jellyfin_error : ss.length ? `${ss.length} session${ss.length > 1 ? 's' : ''} · together ${totMbps.toFixed(1)} Mbit/s ≈ ${(totMbps / 8).toFixed(1)} MB/s read from the shared disk · heaviest first` : '';
+    if ($('#lv-scount').textContent !== t) $('#lv-scount').textContent = t; }
+  setIfChanged('#lv-streams', ss.length ? ss.map(st => {
+    const o = st.out || {};
+    const m = st.converting ? ['conv', 'Converting'] : st.method === 'DirectStream' ? ['remux', 'Direct stream'] : ['direct', 'Direct play'];
+    const mtip = st.converting ? 'The server converts this video live — heavy CPU work' : st.method === 'DirectStream' ? 'Repackaged on the fly, picture untouched — light work' : 'The file is sent as is — lightest for the server';
+    const src = [st.src.res, st.src.codec, st.src.hdr].filter(Boolean).join(' ') + (st.src.mbps ? ` · ${st.src.mbps} Mbit/s` : '');
+    const out = st.converting ? ` → ${o.height ? o.height + 'p ' : ''}${o.video || ''}${o.mbps ? ` · ${o.mbps} Mbit/s` : ''}${o.fps ? ` · ${Math.round(o.fps)} fps${st.src.fps ? ' (needs ' + Math.round(st.src.fps) + ')' : ''}` : ''}${o.hw && o.hw !== 'none' ? ' · hardware ' + o.hw : ' · software'}` : '';
+    const what = st.converting ? [o.video_direct === false ? 'video' : '', o.audio_direct === false ? 'audio' : ''].filter(Boolean).join(' + ') : '';
+    const why = st.converting && o.reasons && o.reasons.length ? `Converting ${what || 'it'} because ${o.reasons.map(r => REASON_TXT[r] || r).join(', ')}` : '';
+    return `<div class="stc">
+      <img class="poster" loading="lazy" alt="" src="${posterSrc(st.poster, 96)}" data-l="${esc((st.title || '?')[0])}" onerror="posterFail(this)">
+      <div style="min-width:0"><div class="t" title="${esc(st.title)}">${esc(st.title)}</div>
+        <div class="m"><span title="${esc(st.user)}">${I.eye}${esc(shortName(st.user))}</span>· ${esc(st.client || '')}${st.device ? ' on ' + esc(st.device) : ''}${st.paused ? ' · <b style="color:var(--amber)">paused</b>' : ''}</div>
+        <div class="q"><span class="mth ${m[0]}" title="${esc(mtip)}">${m[1]}</span><span>${esc(src + out)}</span>${st.src.audio ? `<span>· ${esc(st.src.audio)}${st.src.channels ? ' ' + st.src.channels + 'ch' : ''}</span>` : ''}</div>
+        <div class="why" title="${esc(why)}">${esc(why)}</div>
+        <div class="bar" title="${st.progress != null ? Math.round(st.progress * 100) + '% watched' : ''}"><i style="width:${st.progress != null ? Math.round(st.progress * 100) : 0}%"></i></div>
+      </div>
+      ${impactHtml(st, totMbps, st === heaviest)}
+    </div>`;
+  }).join('') : '<div class="note info">Nobody is watching anything in Jellyfin right now.</div>');
+
+  // background jobs
+  const jobs = [];
+  for (const t of n.tasks || []) jobs.push([`Jellyfin: ${t.name}`, `${t.pct}%`]);
+  for (const c of n.arr || []) jobs.push([`${c.app}: ${c.name}`, c.status === 'queued' ? 'waiting' : 'running' + (c.started ? ' since ' + new Date(c.started).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : '')]);
+  if (n.library_updating) jobs.push(['This page: re-reading the library', 'running']);
+  if (n.qb_active) jobs.push([`qBittorrent: ${n.qb_active} active torrent${n.qb_active > 1 ? 's' : ''}`, `↑ ${fmtRate(qb.up)} · ↓ ${fmtRate(qb.down)}`]);
+  { const jc = $('#lv-jobcount'); const t = jobs.length ? String(jobs.length) : ''; if (jc.textContent !== t) jc.textContent = t; }
+  setIfChanged('#lv-jobs', jobs.length ? '<div class="jobs">' + jobs.map(j => `<div class="job"><b style="font-weight:500" title="${esc(j[0])}">${esc(j[0])}</b><span>${esc(j[1])}</span></div>`).join('') + '</div>'
+    : '<div class="note info">No background jobs running.</div>');
+
+  // apps
+  renderApps(n);
+
+  // tab label: green dot while someone watches
+  $('#c-live').innerHTML = playing.length ? `<i class="live-dot" title="${playing.length} watching"></i>` : '';
+  drawCharts();
+}
+const REASON_TXT = {
+  ContainerNotSupported: "the player can't open this file type", VideoCodecNotSupported: "the player can't play this video format",
+  AudioCodecNotSupported: "the player can't play this audio format", SubtitleCodecNotSupported: 'subtitles are burned into the picture',
+  VideoBitDepthNotSupported: "the player can't play 10-bit video", VideoRangeTypeNotSupported: "the player can't show HDR / Dolby Vision",
+  ContainerBitrateExceedsLimit: "the video is above the player's quality limit", VideoBitrateNotSupported: "the video bitrate is above the player's limit",
+  AudioChannelsNotSupported: 'too many audio channels for the player', VideoResolutionNotSupported: 'the resolution is too high for the player',
+  VideoProfileNotSupported: "the player doesn't support this video profile", VideoLevelNotSupported: "the player doesn't support this video level",
+  AudioIsExternal: 'the audio track is a separate file', DirectPlayError: 'direct play failed',
+};
+
+/* replace a block's HTML only when it really changed (keeps hover, focus and tooltips steady) */
+function setIfChanged(sel, html) {
+  const el = typeof sel === 'string' ? $(sel) : sel;
+  if (el && el.dataset.sig !== html) { el.innerHTML = html; el.dataset.sig = html; }
+}
+const APP_COLS = [['name', 'App', ''], ['cpu', 'CPU', ''], ['rss', 'Memory', 'hide-m'], ['r', 'Disk read', ''], ['w', 'Disk write', 'hide-m']];
+function renderApps(n, force) {
+  const box = $('#lv-apps');
+  if (!force && box.matches(':hover') && box.dataset.sig) return;   // don't move rows under the mouse
+  const sort = prefs.appSort || 'name', dir = prefs.appDir || (sort === 'name' ? 1 : -1);
+  const apps = [...(n.apps || [])].sort((a, b) => sort === 'name' ? dir * a.name.localeCompare(b.name) : dir * ((a[sort] || 0) - (b[sort] || 0)) || a.name.localeCompare(b.name));
+  const head = APP_COLS.map(([k, label, cls]) => `<th class="${cls} ${k === sort ? 'on' : ''}" data-sort="${k}" title="Sort by ${label.toLowerCase()}" aria-sort="${k === sort ? (dir > 0 ? 'ascending' : 'descending') : 'none'}">${label}<span class="ar">${k === sort ? (dir > 0 ? '↑' : '↓') : ''}</span></th>`).join('');
+  setIfChanged(box, `<table class="apps"><thead><tr>${head}</tr></thead><tbody>` +
+    apps.map(a => `<tr class="${a.cpu >= 50 || a.r + a.w >= 5242880 ? 'hot' : ''}"><td>${esc(a.name)}${a.count > 1 ? ` <span style="color:var(--faint)">×${a.count}</span>` : ''}</td><td>${a.cpu.toFixed(a.cpu < 10 ? 1 : 0)}%</td><td class="hide-m">${fmtSize(a.rss)}</td><td>${fmtRate(a.r)}</td><td class="hide-m">${fmtRate(a.w)}</td></tr>`).join('') + '</tbody></table>');
+}
+$('#main').addEventListener('click', e => {
+  const th = e.target.closest('#lv-apps th[data-sort]'); if (!th) return;
+  const k = th.dataset.sort;
+  if (prefs.appSort === k || (!prefs.appSort && k === 'name')) prefs.appDir = -(prefs.appDir || (k === 'name' ? 1 : -1));
+  else { prefs.appSort = k; prefs.appDir = k === 'name' ? 1 : -1; }
+  savePrefs();
+  if (LIVE.now) renderApps(LIVE.now, true);
+});
+
+/* ---------- stream impact ---------- */
+// One scale for every stream so they compare at a glance: 0 … 80 Mbit/s (a 4K Blu-ray remux).
+// Square-root scale, so small streams stay visible next to big ones.
+const IMPACT_MAX = 80;
+function streamMbps(st) { return (st.converting && st.out && st.out.mbps) || st.src.mbps || 0; }
+function streamWeight(st) {   // 0…1: data rate, or conversion CPU if that is worse
+  const data = Math.min(1, Math.sqrt(streamMbps(st) / IMPACT_MAX));
+  const cpu = st.converting ? Math.min(1, Math.sqrt((st.cpu || 200) / 800)) : 0;
+  return Math.max(data, cpu);
+}
+function streamClass(st) {
+  const m = Math.max(streamMbps(st), st.src.mbps || 0), cpu = st.converting ? (st.cpu || 0) : 0;
+  if (m >= 40 || cpu >= 600) return ['beast', 'Beast'];
+  if (m >= 20 || cpu >= 300 || st.converting) return ['heavy', 'Heavy'];
+  if (m >= 8) return ['medium', 'Medium'];
+  return ['light', 'Light'];
+}
+function sortStreams(list) {
+  return [...list].sort((a, b) => (a.paused - b.paused) || (streamWeight(b) - streamWeight(a)));
+}
+function impactHtml(st, total, isTop) {
+  const mbps = streamMbps(st), [cls, word] = streamClass(st);
+  const share = !st.paused && total > 0 ? Math.round(mbps / total * 100) : null;
+  const disk = (st.src.mbps || mbps) / 8;
+  const w = Math.max(3, Math.round(streamWeight(st) * 100));
+  const ticks = [5, 20, 40].map(v => `<u style="left:${Math.sqrt(v / IMPACT_MAX) * 100}%"></u>`).join('');
+  const sub = st.paused ? 'paused — no load right now'
+    : st.converting ? `${st.cpu != null ? (st.cpu / 100).toFixed(1) + ' CPU cores converting · ' : 'converting · '}${share}% of streaming`
+    : `${share}% of streaming · ${disk.toFixed(1)} MB/s from disk`;
+  const tip = `${mbps.toFixed(1)} Mbit/s is the video data sent to the viewer every second (${(mbps / 8).toFixed(1)} MB/s). `
+    + `For comparison: a 1080p web stream is about 5–8 Mbit/s, a 1080p Blu-ray 20–40, a 4K remux 60–80. `
+    + (st.converting ? `Converting also keeps ${st.cpu != null ? (st.cpu / 100).toFixed(1) + ' processor cores' : 'processor cores'} busy. ` : '')
+    + `The bar runs from 0 to ${IMPACT_MAX} Mbit/s, the same scale for every stream; the marks are 5, 20 and 40.`;
+  return `<div class="imp" title="${esc(tip)}" style="${st.paused ? 'opacity:.55' : ''}">
+    <div class="imp-top">${isTop ? '<span class="crown">▲ heaviest</span>' : ''}<span class="cls ${cls}">${word}</span><b>${mbps ? mbps.toFixed(1) : '—'}</b>Mbit/s</div>
+    <div class="imp-bar">${ticks}<i class="${cls}" style="width:${w}%"></i></div>
+    <div class="imp-sub">${esc(sub)}</div>
+  </div>`;
+}
+
+/* ---------- visual disk breakdown ---------- */
+const C_YOU = 'var(--accent)', C_OTHERS = 'var(--blue)';
+const shared = () => !LIVE.now || LIVE.now.shared !== false;
+const others = () => shared() ? 'other customers' : 'other programs on this server';
+const Others = () => shared() ? 'Other customers' : 'Everything else';
+const DRIVE_LIMIT = [100, 150];   // small random operations per second a spinning hard drive can do
+function diskSplit(n) {
+  const busy = Math.max(0, Math.min(100, n.disk.busy || 0));
+  const tot = (n.disk.r || 0) + (n.disk.w || 0), mine = n.my_io.r + n.my_io.w;
+  const share = tot > 0 ? Math.min(1, mine / tot) : 0;
+  const you = busy * share;
+  return {busy, you, others: busy - you, free: 100 - busy, share};
+}
+function sectionBar(parts, mini) {
+  return `<div class="sbar${mini ? ' mini' : ''}" role="img" aria-label="${esc(parts.map(p => `${p.label} ${Math.round(p.v)}%`).join(', '))}">`
+    + parts.map(p => `<i class="${p.free ? 'free' : p.na ? 'na' : ''}" title="${esc(p.label)}" style="flex:0 0 ${Math.max(0, p.v).toFixed(2)}%;${p.free || p.na ? '' : 'background:' + p.color}"></i>`).join('') + '</div>';
+}
+function sectionLegend(parts) {
+  return '<div class="sleg">' + parts.map(p => `<span class="${p.na ? 'na' : ''}"><i class="${p.na ? 'na' : ''}" style="${p.na ? '' : 'background:' + (p.free ? 'var(--panel3)' : p.color)}"></i>${esc(p.label)} <b>${p.text}</b></span>`).join('') + '</div>';
+}
+function diskVisual(n) {
+  const sp = diskSplit(n), ops = n.disk.ops, avg = n.disk.avg_kb, hdd = n.disk_rotational !== false;
+  const parts = [{label: Others() + ' — not yours', v: sp.others, na: true, text: Math.round(sp.others) + '%'},
+                 {label: 'Your apps', v: sp.you, color: C_YOU, text: Math.round(sp.you) + '%'},
+                 {label: 'Idle', v: sp.free, free: true, text: Math.round(sp.free) + '%'}];
+  const scale = 200, pos = v => Math.min(100, v / scale * 100);
+  const lvlColor = ops == null ? 'var(--faint)' : ops >= DRIVE_LIMIT[1] ? 'var(--red)' : ops >= DRIVE_LIMIT[0] ? 'var(--amber)' : 'var(--green)';
+  const verdict = ops == null ? '' : ops >= DRIVE_LIMIT[1] ? 'beyond what a spinning drive can do — requests queue up'
+    : ops >= DRIVE_LIMIT[0] ? 'at the drive’s limit' : sp.busy >= 80 ? 'below the usual limit, but the drive is still busy — the reads are scattered far apart' : 'comfortably within the drive’s limit';
+  return `<div class="vis"><div class="vt"><b>Who keeps the drive busy</b><span>share of the drive’s time, split by how much data each side moves</span></div>
+      ${sectionBar(parts)}${sectionLegend(parts)}</div>
+    ${hdd ? '' : `<div class="vis"><div class="vt"><b>Operations per second</b><span>${ops == null ? 'measuring…' : Math.round(ops) + ' per second'} — this is an SSD, which handles thousands of small operations per second</span></div></div>`}
+    ${!hdd ? '' : `<div class="vis"><div class="vt"><b>Small operations per second</b><span>${ops == null ? 'measuring…' : `${Math.round(ops)} per second${avg ? ` · about ${avg < 10 ? avg.toFixed(1) : Math.round(avg)} KB each` : ''} — ${verdict}`}</span></div>
+      <div class="gauge" role="img" aria-label="${ops == null ? 'unknown' : Math.round(ops)} operations per second; a spinning drive manages about 100 to 150"><i style="width:${ops == null ? 0 : Math.max(1, pos(ops))}%;background:${lvlColor}"></i><u style="left:${pos(DRIVE_LIMIT[0])}%"></u><u style="left:${pos(DRIVE_LIMIT[1])}%"></u></div>
+      <div class="gscale"><span style="left:2%">0</span><span style="left:25%">comfortable</span><span style="left:${pos(DRIVE_LIMIT[0])}%">100</span><span style="left:62.5%">limit</span><span style="left:${pos(DRIVE_LIMIT[1])}%">150</span><span style="left:88%">overloaded</span></div>
+      <div class="td-hint">A spinning hard drive has to move its read head for every small read, so it manages only about 100–150 of them per second, no matter how little data each one carries. That is why it can be 90% busy while moving just 1 MB/s.</div></div>`}`;
+}
+
+/* ---------- tile details: what is behind each number, and its history ---------- */
+const TILE = {key: null, range: 3600, long: null, longBusy: false, drawn: 0, qbit: null};
+const fidx = () => { const m = {}; (LIVE.fields || []).forEach((f, i) => m[f] = i); return m; };
+const fv = (r, k, idx) => { const i = idx[k]; return i == null || i >= r.length ? null : r[i]; };
+const fsum = (r, a, b, idx) => { const x = fv(r, a, idx), y = fv(r, b, idx); return x == null && y == null ? null : (x || 0) + (y || 0); };
+const MBs = v => v == null ? '—' : v < 0.1 ? Math.round(v * 1024) + ' KB/s' : (v >= 10 ? v.toFixed(0) : v.toFixed(1)) + ' MB/s';
+function barRows(items, unit, fmt) {
+  const max = Math.max(1e-9, ...items.map(x => x[1]));
+  return '<div class="td-rows">' + items.map(([name, v, note]) => `<div class="td-row"><span title="${esc(name)}">${esc(name)}</span><span class="b"><i style="width:${Math.max(2, v / max * 100)}%"></i></span><em>${fmt ? fmt(v) : v}${note ? ' ' + esc(note) : ''}</em></div>`).join('') + '</div>';
+}
+function appsBy(n, kind) {   // kind: 'io' | 'cpu'
+  return (n.apps || []).map(a => [a.name, kind === 'io' ? (a.r + a.w) / 1048576 : a.cpu])
+    .filter(x => x[1] >= (kind === 'io' ? 0.01 : 0.3)).sort((a, b) => b[1] - a[1]).slice(0, 8);
+}
+function appsAt(row, idx, kind) {
+  const m = fv(row, 'apps', idx) || {};
+  return Object.entries(m).map(([k, v]) => [k, kind === 'cpu' ? v[0] : v[1]]).filter(x => x[1] >= (kind === 'cpu' ? 0.3 : 0.01)).sort((a, b) => b[1] - a[1]).slice(0, 6);
+}
+const TILES = {
+  disk: {
+    title: 'Shared disk — how busy the hard drive is',
+    what: () => `The share of time the drive holding your files is working. ${shared() ? 'Other customers on this server use the same drive, so their activity counts too.' : 'Every program on this server that uses the drive counts.'} Near 100% means everything that reads files has to queue: starting a video, seeking, posters, library scans.`,
+    charts: [
+      {title: 'Busy', unit: '%', max: 100, series: [{label: 'Busy', color: 'var(--accent)', get: (r, i) => fv(r, 'disk_busy', i)}]},
+      {title: 'Small operations', unit: 'per second', band: DRIVE_LIMIT, minHi: 200, series: [{label: 'Operations', color: 'var(--accent)', get: (r, i) => fv(r, 'disk_ops', i)}]},
+      {title: 'Disk traffic', unit: 'MB/s', series: [{label: 'Everyone on this disk', color: 'var(--faint)', get: (r, i) => fsum(r, 'disk_r', 'disk_w', i)},
+                                                       {label: 'Your apps', color: C_YOU, get: (r, i) => fsum(r, 'my_r', 'my_w', i)}]}],
+    hover: (r, i) => {
+      const tot = fsum(r, 'disk_r', 'disk_w', i) || 0, mine = fsum(r, 'my_r', 'my_w', i) || 0;
+      return `<div class="r"><span>Busy</span><b>${fmtNum(fv(r, 'disk_busy', i) || 0)} %</b></div>${fv(r, 'disk_ops', i) != null ? `<div class="r"><span>Operations</span><b>${Math.round(fv(r, 'disk_ops', i))} /s</b></div>` : ''}<div class="r"><span>Everyone</span><b>${MBs(tot)}</b></div>`
+        + `<div class="r"><span>Your apps</span><b>${MBs(mine)}</b></div><div class="r"><span>${Others()} ≈</span><b>${MBs(Math.max(0, tot - mine))}</b></div>`
+        + appsAt(r, i, 'io').map(([k, v]) => `<div class="r"><span>&nbsp;&nbsp;${esc(k)}</span><b>${MBs(v)}</b></div>`).join('');
+    },
+    now: n => {
+      const tot = ((n.disk.r || 0) + (n.disk.w || 0)) / 1048576, mine = (n.my_io.r + n.my_io.w) / 1048576;
+      const share = tot > 0.05 ? Math.min(100, Math.round(mine / tot * 100)) : null;
+      const d = (n.diagnosis || []).find(x => /disk is/.test(x.title));
+      const jobs = [...(n.tasks || []).map(t => 'Jellyfin: ' + t.name), ...(n.arr || []).filter(c => c.status === 'started').map(c => c.app + ': ' + c.name)];
+      const apps = appsBy(n, 'io');
+      return diskVisual(n) + `<div class="td-kv"><div>Busy<b>${n.disk.busy == null ? '—' : Math.round(n.disk.busy) + '%'}</b>${n.disk.ops != null ? Math.round(n.disk.ops) + ' operations/s' : ''}</div>
+          <div>Everyone on this disk<b>${MBs(tot)}</b>read ${MBs((n.disk.r || 0) / 1048576)} · write ${MBs((n.disk.w || 0) / 1048576)}</div>
+          <div>Your apps<b>${MBs(mine)}</b>${share == null ? 'too little traffic to tell' : share + '% of the traffic'}</div>
+          <div>${Others()} ≈<b>${MBs(Math.max(0, tot - mine))}</b>not visible in detail</div></div>
+        ${d ? `<div class="td-why">${esc(d.detail)}</div>` : ''}
+        <h4>Your apps reading or writing right now</h4>${apps.length ? barRows(apps, 'MB/s', MBs) : `<div class="td-hint">None of your apps is using the disk right now — the load comes from ${others()}.</div>`}
+        ${jobs.length ? `<h4>Background jobs that read files</h4><div class="td-hint">${jobs.map(esc).join(' · ')}</div>` : ''}`;
+    },
+  },
+  psi: {
+    title: 'Waiting on disk — how often programs stall',
+    what: () => `The share of time programs on this server are stuck waiting for the disk instead of working. It is measured for the whole server, so it includes ${others()}. When it is high, everything that touches files feels slow, even if the disk numbers look small.`,
+    charts: [{title: 'Waiting', unit: '%', max: 100, series: [{label: 'Waiting', color: 'var(--accent)', get: (r, i) => fv(r, 'io_psi', i)}]},
+             {title: 'Disk busy', unit: '%', max: 100, series: [{label: 'Busy', color: 'var(--faint)', get: (r, i) => fv(r, 'disk_busy', i)}]}],
+    hover: (r, i) => `<div class="r"><span>Waiting</span><b>${fmtNum(fv(r, 'io_psi', i) || 0)} %</b></div><div class="r"><span>Disk busy</span><b>${fmtNum(fv(r, 'disk_busy', i) || 0)} %</b></div>`
+      + appsAt(r, i, 'io').map(([k, v]) => `<div class="r"><span>&nbsp;&nbsp;${esc(k)}</span><b>${MBs(v)}</b></div>`).join(''),
+    now: n => {
+      const apps = appsBy(n, 'io');
+      return `<div class="td-kv"><div>Waiting<b>${n.psi.io == null ? '—' : n.psi.io.toFixed(0) + '% of the time'}</b>average of the last 10 s</div>
+        <div>Disk busy<b>${n.disk.busy == null ? '—' : Math.round(n.disk.busy) + '%'}</b></div>
+        <div>Processors waiting<b>${(n.psi.cpu || 0).toFixed(1)}%</b>for comparison</div></div>
+        <h4>Your apps using the disk right now</h4>${apps.length ? barRows(apps, 'MB/s', MBs) : `<div class="td-hint">None of your apps is using the disk right now, so the waiting is caused by ${others()}.</div>`}`;
+    },
+  },
+  stream: {
+    title: 'Streaming — who is watching and how heavy it is',
+    what: 'Video data being sent to viewers right now. Mbit/s is how much data per second: 1080p web is about 5–8, a 1080p Blu-ray 20–40, a 4K remux 60–80. Streams being converted also use processor cores.',
+    charts: [{title: 'Streaming', unit: 'Mbit/s', series: [{label: 'Mbit/s', color: 'var(--accent)', get: (r, i) => fv(r, 'stream_mbps', i)}]},
+             {title: 'Viewers', unit: 'count', series: [{label: 'Playing', color: 'var(--accent)', get: (r, i) => fv(r, 'streams', i)},
+                                                        {label: 'Converting', color: 'var(--red)', get: (r, i) => fv(r, 'transcodes', i)}]}],
+    hover: (r, i) => `<div class="r"><span>Streaming</span><b>${fmtNum(fv(r, 'stream_mbps', i) || 0)} Mbit/s</b></div><div class="r"><span>Playing</span><b>${fv(r, 'streams', i) ?? 0}</b></div><div class="r"><span>Converting</span><b>${fv(r, 'transcodes', i) ?? 0}</b></div>`
+      + Object.entries(fv(r, 'who', i) || {}).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<div class="r"><span>&nbsp;&nbsp;${esc(k)}</span><b>${fmtNum(v)} Mbit/s</b></div>`).join(''),
+    now: n => {
+      const ss = sortStreams(n.streams || []), tot = ss.filter(x => !x.paused).reduce((a, x) => a + streamMbps(x), 0);
+      return `<div class="td-kv"><div>Playing<b>${ss.filter(x => !x.paused).length}</b>${ss.filter(x => x.paused).length} paused</div>
+        <div>Together<b>${tot.toFixed(1)} Mbit/s</b>≈ ${(tot / 8).toFixed(1)} MB/s from the disk</div>
+        <div>Being converted<b>${ss.filter(x => x.converting && !x.paused).length}</b>${ss.filter(x => x.converting).reduce((a, x) => a + (x.cpu || 0), 0) ? (ss.filter(x => x.converting).reduce((a, x) => a + (x.cpu || 0), 0) / 100).toFixed(1) + ' CPU cores' : 'no processor load'}</div></div>
+        <h4>Each stream, heaviest first</h4>${ss.length ? barRows(ss.map(x => [`${shortName(x.user)} · ${x.title}`, streamMbps(x), (x.paused ? 'paused' : streamClass(x)[1]) + (x.converting ? ' · converting' : '')]), 'Mbit/s', v => v.toFixed(1) + ' Mbit/s') : '<div class="td-hint">Nobody is watching right now.</div>'}`;
+    },
+  },
+  qbit: {
+    title: 'qBittorrent — upload and download',
+    what: 'How fast qBittorrent sends (seeding) and receives data. Seeding reads your files from the same shared disk your videos stream from, so heavy seeding can slow streaming down.',
+    charts: [{title: 'qBittorrent', unit: 'MB/s', series: [{label: 'Upload', color: 'var(--accent)', get: (r, i) => fv(r, 'qb_up', i)},
+                                                           {label: 'Download', color: 'var(--blue)', get: (r, i) => fv(r, 'qb_down', i)}]}],
+    hover: (r, i) => `<div class="r"><span>Upload</span><b>${MBs(fv(r, 'qb_up', i))}</b></div><div class="r"><span>Download</span><b>${MBs(fv(r, 'qb_down', i))}</b></div>`
+      + appsAt(r, i, 'io').filter(x => x[0] === 'qBittorrent').map(([k, v]) => `<div class="r"><span>&nbsp;&nbsp;disk use</span><b>${MBs(v)}</b></div>`).join(''),
+    now: n => {
+      const q = n.qbit || {}, list = TILE.qbit;
+      return `<div class="td-kv"><div>Upload<b>${fmtRate(q.up)}</b>${q.up_limit ? 'limit ' + fmtRate(q.up_limit) : 'no limit set'}</div>
+        <div>Download<b>${fmtRate(q.down)}</b>${q.down_limit ? 'limit ' + fmtRate(q.down_limit) : 'no limit set'}</div>
+        <div>Active torrents<b>${n.qb_active ?? '—'}</b></div></div>
+        <h4>Torrents moving data right now</h4>${list == null ? '<div class="td-hint">Loading…</div>' : list.error ? `<div class="td-hint">${esc(list.error)}</div>` : list.length
+          ? barRows(list.map(t => [t.name, (t.up + t.down) / 1048576, `↑${fmtRate(t.up)} ↓${fmtRate(t.down)}`]), 'MB/s', () => '') : '<div class="td-hint">No torrent is sending or receiving data.</div>'}`;
+    },
+  },
+  cpu: {
+    title: 'Server CPU — how busy the processors are',
+    what: () => `How much of the server's processor power is in use${shared() ? ', on a server shared with other customers' : ''}. Your own apps rarely matter here, except when videos are being converted.`,
+    charts: [{title: 'Processors used', unit: '%', max: 100, series: [{label: 'Whole server', color: 'var(--faint)', get: (r, i) => fv(r, 'load', i)},
+                                                                     {label: 'Your apps', color: 'var(--accent)', get: (r, i) => fv(r, 'my_cpu', i) == null ? null : fv(r, 'my_cpu', i) / (LIVE.now ? LIVE.now.load.cores : 1)}]}],
+    hover: (r, i) => `<div class="r"><span>Whole server</span><b>${fmtNum(fv(r, 'load', i) || 0)} %</b></div><div class="r"><span>Your apps</span><b>${fmtNum((fv(r, 'my_cpu', i) || 0) / 100)} cores</b></div>`
+      + appsAt(r, i, 'cpu').map(([k, v]) => `<div class="r"><span>&nbsp;&nbsp;${esc(k)}</span><b>${fmtNum(v)} %</b></div>`).join('') + '<div class="r"><span style="color:var(--faint)">100% = one core</span></div>',
+    now: n => {
+      const mine = (n.apps || []).reduce((a, x) => a + x.cpu, 0), apps = appsBy(n, 'cpu');
+      return `<div class="td-kv"><div>Whole server<b>${n.load.pct.toFixed(0)}%</b>load ${n.load.avg.map(x => x.toFixed(1)).join(' / ')} (1 / 5 / 15 min)</div>
+        <div>Cores<b>${n.load.cores}</b>${shared() ? 'shared with other customers' : 'in this server'}</div>
+        <div>Your apps<b>${(mine / 100).toFixed(2)} cores</b>${(mine / n.load.cores).toFixed(2)}% of the server</div></div>
+        <h4>Your apps using the processors right now <small style="text-transform:none;letter-spacing:0;color:var(--faint)">100% = one core</small></h4>${apps.length ? barRows(apps, '%', v => v.toFixed(v < 10 ? 1 : 0) + '%') : '<div class="td-hint">Your apps are idle.</div>'}`;
+    },
+  },
+};
+async function openTile(key) {
+  const t = TILES[key]; if (!t || !LIVE.now) return;
+  TILE.key = key; TILE.long = null; TILE.qbit = null; TILE.range = +(prefs.tileRange || 3600);
+  openModal({title: t.title, ok: null, wide: true, body: `<div class="td">
+    <div class="td-what">${esc(typeof t.what === 'function' ? t.what() : t.what)}</div>
+    <div id="td-now"></div>
+    <h4>History <select class="lv-rsel" id="td-range" aria-label="Time span" style="margin-left:0">${$('#lv-range') ? $('#lv-range').innerHTML : ''}</select>
+      <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--faint)">hover the chart to see who caused it at that moment</span></h4>
+    <div class="td-chart" id="td-chart"></div></div>`});
+  MODALKIND = 'tile';
+  $('#td-range').value = String(TILE.range);
+  $('#td-range').addEventListener('change', e => { TILE.range = +e.target.value; prefs.tileRange = TILE.range; savePrefs(); TILE.long = null; drawTileChart(true); });
+  fillTileNow(); drawTileChart(true);
+  if (key === 'qbit') { try { TILE.qbit = await api('api/detail/qbit'); } catch (e) { TILE.qbit = {error: e.message}; } fillTileNow(); }
+}
+function fillTileNow() {
+  if (MODALKIND !== 'tile' || !$('#td-now') || !LIVE.now) return;
+  setIfChanged('#td-now', TILES[TILE.key].now(LIVE.now));
+}
+async function drawTileChart(force) {
+  const box = $('#td-chart'); if (!box || MODALKIND !== 'tile') return;
+  if (!force && Date.now() - TILE.drawn < 10000) return;
+  TILE.drawn = Date.now();
+  const span = TILE.range, t1 = Date.now() / 1000, t0 = t1 - span;
+  let rows, res = 3;
+  if (span <= RAW_SPAN) rows = LIVE.rows.filter(r => r[0] >= t0);
+  else {
+    if (!TILE.long || TILE.long.span !== span) {
+      if (TILE.longBusy) return;
+      TILE.longBusy = true; setIfChanged(box, '<div class="td-hint" style="height:150px">Loading…</div>');
+      try { const r = await api('api/serverhistory?range=' + span); TILE.long = {span, rows: r.rows, res: r.res}; } catch (e) { TILE.long = {span, rows: [], res: 60}; }
+      TILE.longBusy = false;
+      if (span !== TILE.range) return;
+    }
+    rows = TILE.long.rows.filter(r => r[0] >= t0); res = TILE.long.res;
+  }
+  const t = TILES[TILE.key], idx = fidx();
+  if (!rows.length) { box.dataset.sig = ''; box.innerHTML = '<div class="td-hint" style="height:150px;display:flex;align-items:center">No measurements in this time span yet — history is kept for 30 days from now on.</div>'; return; }
+  const W = Math.max(300, box.clientWidth - 22), H = 120, L = 44, R = 8, T = 6, B = 16;
+  const x = tt => L + (tt - t0) / (t1 - t0) * (W - L - R), gap = Math.max(90, res * 3);
+  box.dataset.sig = '';
+  box.innerHTML = t.charts.map((c, ci) => {
+    const vals = rows.flatMap(r => c.series.map(sr => sr.get(r, idx))).filter(v => v != null);
+    const hi = c.max || niceMax(Math.max(c.minHi || 1e-9, ...vals));
+    const y = v => T + (1 - Math.min(v, hi) / hi) * (H - T - B);
+    const band = c.band ? `<rect x="${L}" width="${W - L - R}" y="${y(c.band[1])}" height="${y(c.band[0]) - y(c.band[1])}" fill="rgba(232,168,74,.13)"/><rect x="${L}" width="${W - L - R}" y="${y(hi)}" height="${Math.max(0, y(c.band[1]) - y(hi))}" fill="rgba(229,103,90,.10)"/><text class="ax" x="${W - R - 4}" y="${y(c.band[1]) + 11}" text-anchor="end">drive limit ${c.band[0]}–${c.band[1]}</text>` : '';
+    const paths = band + c.series.map(sr => {
+      let d = '', prev = null;
+      for (const r of rows) { const v = sr.get(r, idx); if (v == null) { prev = null; continue; } d += (prev == null || r[0] - prev > gap ? 'M' : 'L') + x(r[0]).toFixed(1) + ' ' + y(v).toFixed(1); prev = r[0]; }
+      return `<path d="${d}" fill="none" stroke="${sr.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    }).join('');
+    const grid = [0, .5, 1].map(f => `<line class="gl" x1="${L}" x2="${W - R}" y1="${y(hi * f)}" y2="${y(hi * f)}"/><text class="ax" x="${L - 6}" y="${y(hi * f) + 3.5}" text-anchor="end">${fmtNum(hi * f)}</text>`).join('');
+    const last = ci === t.charts.length - 1;
+    const ticks = last ? timeTicks(t0, t1).map(tt => `<text class="ax" x="${x(tt)}" y="${H + 10}" text-anchor="middle">${tickLabel(tt, span)}</text>`).join('') : '';
+    const legend = c.series.length > 1 ? `<span class="lg">${c.series.map(sr => `<span><i style="background:${sr.color}"></i>${esc(sr.label)}</span>`).join('')}</span>` : '';
+    return `<div class="chart"><div class="ch"><span><b>${c.title}</b> · ${c.unit}</span>${legend}</div>
+      <svg viewBox="0 0 ${W} ${H + (last ? 14 : 0)}" height="${H + (last ? 14 : 0)}" role="img" aria-label="${c.title} over time">${grid}${paths}${ticks}<line class="xh" y1="${T}" y2="${H - B}" style="display:none"/><rect x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent" data-thit="1"/></svg></div>`;
+  }).join('');
+  box._ctx = {rows, idx, t0, t1, W, L, R, res};
+}
+$('#m-body').addEventListener('mousemove', e => {
+  const hit = e.target.closest && e.target.closest('rect[data-thit]'); const box = $('#td-chart');
+  if (!hit || !box || !box._ctx) return;
+  const {rows, idx, t0, t1, W, L, R, res} = box._ctx, rc = hit.ownerSVGElement.getBoundingClientRect();
+  const tt = t0 + ((e.clientX - rc.left) / rc.width * W - L) / (W - L - R) * (t1 - t0);
+  let best = rows[0]; for (const r of rows) if (Math.abs(r[0] - tt) < Math.abs(best[0] - tt)) best = r;
+  const xx = L + (best[0] - t0) / (t1 - t0) * (W - L - R);
+  $$('#td-chart .xh').forEach(l => { l.setAttribute('x1', xx); l.setAttribute('x2', xx); l.style.display = ''; });
+  const when = new Date(best[0] * 1000);
+  LTIP.innerHTML = `<div class="tt">${when.toLocaleString([], res >= 60 ? {weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'} : {weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit'})}${res > 60 ? ` · average of ${Math.round(res / 60)} min` : ''}</div>` + TILES[TILE.key].hover(best, idx);
+  LTIP.style.display = 'block';
+  const w = LTIP.offsetWidth, h = LTIP.offsetHeight;
+  LTIP.style.left = (e.clientX + 16 + w > innerWidth ? e.clientX - w - 16 : e.clientX + 16) + 'px';
+  LTIP.style.top = Math.max(8, Math.min(innerHeight - h - 8, e.clientY - h / 2)) + 'px';
+});
+$('#m-body').addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('rect[data-thit]')) { LTIP.style.display = 'none'; $$('#td-chart .xh').forEach(l => l.style.display = 'none'); } });
+$('#main').addEventListener('click', e => { const t = e.target.closest('.tile[data-tile]'); if (t) openTile(t.dataset.tile); });
+$('#main').addEventListener('keydown', e => { const t = e.target.closest && e.target.closest('.tile[data-tile]'); if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openTile(t.dataset.tile); } });
+
+/* load level: the worst bottleneck, averaged over the last minute so it doesn't jump around */
+const LEVELS = [[0, 'Calm', 'lv-calm'], [40, 'Busy', 'lv-busy'], [65, 'Strained', 'lv-strained'], [85, 'Overloaded', 'lv-over']];
+function loadFactors(n) {
+  const since = Date.now() / 1000 - 60;
+  const recent = LIVE.rows.filter(r => r[0] >= since);
+  const avg = (k, cur) => { const i = col(k); const v = recent.map(r => r[i]).filter(x => x != null); if (cur != null) v.push(cur); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0; };
+  const playing = (n.streams || []).filter(x => !x.paused);
+  const conv = playing.filter(x => x.converting);
+  const behind = conv.filter(x => x.out && x.out.fps && x.src.fps && x.out.fps < x.src.fps * 0.95);
+  const busy = avg('disk_busy', n.disk.busy), psi = avg('io_psi', n.psi.io), cpu = avg('load', n.load.pct);
+  const up = avg('qb_up', n.qbit ? n.qbit.up / 1048576 : null);
+  return [
+    {name: 'Shared disk', score: busy, text: `${Math.round(busy)}% busy`},
+    {name: 'Waiting on the disk', score: Math.min(100, psi * 2.5), text: `${Math.round(psi)}% of the time`},
+    {name: 'Server processors', score: cpu, text: `${Math.round(cpu)}% used`},
+    {name: 'Video converting', score: behind.length ? 95 : Math.min(90, conv.length * 35), text: conv.length ? `${conv.length} stream${conv.length > 1 ? 's' : ''}${behind.length ? ', falling behind' : ''}` : 'none'},
+    {name: 'Torrent upload', score: Math.min(100, up / 30 * 100), text: `${up.toFixed(1)} MB/s`},
+  ];
+}
+function renderLevel(n) {
+  const f = loadFactors(n);
+  const top = f.reduce((a, b) => b.score > a.score ? b : a);
+  const score = Math.max(0, Math.min(100, top.score));
+  // hysteresis: the word only changes once the score is clearly past a boundary
+  let li = LIVE.levelIdx ?? LEVELS.findLastIndex(l => score >= l[0]);
+  while (li < LEVELS.length - 1 && score >= LEVELS[li + 1][0] + 3) li++;
+  while (li > 0 && score < LEVELS[li][0] - 3) li--;
+  LIVE.levelIdx = li;
+  const [, word, cls] = LEVELS[li];
+  $('#lv-word').textContent = word; $('#lv-word').className = 'word ' + cls;
+  const fill = $('#lv-fill'); fill.className = 'fill ' + cls; fill.style.width = Math.max(2, score) + '%';
+  const why = li === 0 ? 'nothing is holding things up' : `mostly ${top.name.toLowerCase()} (${top.text})`;
+  if ($('#lv-why').textContent !== why) $('#lv-why').textContent = why;
+  $('#lv-level').setAttribute('aria-label', `Server load: ${word}, ${why}. Click for details.`);
+  if (MODALKIND === 'diag' && $('#scrim').classList.contains('on')) fillDiag();
+  if (MODALKIND === 'tile' && $('#scrim').classList.contains('on')) { fillTileNow(); drawTileChart(false); }
+}
+function fillDiag() {
+  const n = LIVE.now; if (!n) return;
+  const f = loadFactors(n);
+  const color = v => v >= 85 ? 'var(--red)' : v >= 65 ? 'var(--amber)' : v >= 40 ? '#e8c84a' : 'var(--green)';
+  const html = `<div class="diag-pop" style="padding:10px 0 14px">
+    <h4 style="margin:4px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">What adds to the load (last minute)</h4>
+    ${f.map(x => `<div class="fx"><span>${x.name}</span><span class="b"><i style="width:${Math.max(2, Math.min(100, x.score))}%;background:${color(x.score)}"></i></span><span>${esc(x.text)}</span></div>`).join('')}
+    <h4 style="margin:16px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">What it means right now</h4>
+    ${n.diagnosis.map(d => `<div class="dg ${d.level}"><span class="ic" aria-label="${LVL[d.level][1]}">${LVL[d.level][0]}</span><b>${esc(d.title)}</b><p>${esc(d.detail)}</p></div>`).join('')}
+  </div>`;
+  if ($('#m-body').dataset.sig !== html) { $('#m-body').innerHTML = html; $('#m-body').dataset.sig = html; }
+}
+function openDiag() {
+  openModal({title: 'Why the server is at this level', body: '', ok: null, wide: true});
+  MODALKIND = 'diag';
+  $('#m-body').dataset.sig = '';
+  fillDiag();
+}
+
+/* charts: one measure per chart, all sharing the same time axis and the same hover */
+const CHARTS = [
+  {title: 'Disk busy', unit: '%', max: 100, series: [{k: 'disk_busy', label: 'Busy', color: 'var(--accent)'}]},
+  {title: 'Disk traffic', unit: 'MB/s', series: [{label: 'Everyone on this disk', color: 'var(--faint)', f: (r, i) => sum2(r, i.disk_r, i.disk_w)}, {label: 'Your apps', color: 'var(--accent)', f: (r, i) => sum2(r, i.my_r, i.my_w)}]},
+  {title: 'Waiting on the disk', unit: '%', max: 100, series: [{k: 'io_psi', label: 'Waiting', color: 'var(--accent)'}]},
+  {title: 'Streaming', unit: 'Mbit/s', series: [{k: 'stream_mbps', label: 'Streams', color: 'var(--accent)'}], extra: [['streams', 'playing'], ['transcodes', 'converting']]},
+  {title: 'qBittorrent', unit: 'MB/s', series: [{k: 'qb_up', label: 'Upload', color: 'var(--accent)'}, {k: 'qb_down', label: 'Download', color: 'var(--blue)'}]},
+  {title: 'Server processors (shared)', unit: '%', max: 100, series: [{k: 'load', label: 'Used', color: 'var(--accent)'}]},
+];
+function sum2(r, a, b) { return r[a] == null && r[b] == null ? null : (r[a] || 0) + (r[b] || 0); }
+const RAW_SPAN = 7200;      // the server keeps every sample this long; longer spans come as summaries
+async function fetchLong() {
+  if (LIVE.range <= RAW_SPAN || LIVE.longBusy) return;
+  LIVE.longBusy = true;
+  try {
+    const span = LIVE.range, r = await api('api/serverhistory?range=' + span);
+    if (span === LIVE.range) { LIVE.long = {span, rows: r.rows, res: r.res, at: Date.now()}; drawCharts(); }
+  } catch (e) {}
+  LIVE.longBusy = false;
+}
+function chartData() {
+  const idx = {}; LIVE.fields.forEach((f, i) => idx[f] = i);
+  const t1 = Date.now() / 1000, t0 = t1 - LIVE.range;
+  const long = LIVE.range > RAW_SPAN;
+  const rows = long ? (LIVE.long && LIVE.long.span === LIVE.range ? LIVE.long.rows.filter(r => r[0] >= t0) : [])
+                    : LIVE.rows.filter(r => r[0] >= t0);
+  return {idx, t0, t1, rows, res: long && LIVE.long ? LIVE.long.res : 3};
+}
+function valueOf(s, r, idx) { return s.f ? s.f(r, idx) : r[idx[s.k]]; }
+function drawCharts() {
+  const box = $('#lv-charts'); if (!box || !LIVE.fields) return;
+  if ($('#live').dataset.active !== 'history') return;            // hidden: don't spend time drawing
+  const {idx, t0, t1, rows, res} = chartData();
+  const W = Math.max(280, box.clientWidth - 22), H = 96, L = 44, R = 8, T = 6, B = 16;
+  if (!rows.length) {
+    setIfChanged(box, LIVE.range > RAW_SPAN && !LIVE.long ? '<div class="note info" style="height:200px;display:flex;align-items:center;justify-content:center">Loading…</div>'
+      : '<div class="note info" style="height:200px;display:flex;align-items:center;justify-content:center">No measurements in this time span yet. History is kept for 30 days from now on.</div>');
+    return;
+  }
+  const x = t => L + (t - t0) / (t1 - t0) * (W - L - R);
+  const gapLimit = Math.max(90, res * 3);   // break the line where measurements are missing
+  box.dataset.sig = '';
+  box.innerHTML = CHARTS.map((c, ci) => {
+    const vals = rows.flatMap(r => c.series.map(s => valueOf(s, r, idx))).filter(v => v != null);
+    const hi = c.max || niceMax(Math.max(1e-9, ...vals));
+    const y = v => T + (1 - Math.min(v, hi) / hi) * (H - T - B);
+    const paths = c.series.map(s => {
+      let d = '', prev = null;
+      for (const r of rows) {
+        const v = valueOf(s, r, idx);
+        if (v == null) { prev = null; continue; }
+        d += (prev == null || r[0] - prev > gapLimit ? 'M' : 'L') + x(r[0]).toFixed(1) + ' ' + y(v).toFixed(1);
+        prev = r[0];
+      }
+      return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    }).join('');
+    const grid = [0, .5, 1].map(f => `<line class="gl" x1="${L}" x2="${W - R}" y1="${y(hi * f)}" y2="${y(hi * f)}"/><text class="ax" x="${L - 6}" y="${y(hi * f) + 3.5}" text-anchor="end">${fmtNum(hi * f)}</text>`).join('');
+    const last = ci === CHARTS.length - 1;
+    const ticks = last ? timeTicks(t0, t1).map(t => `<text class="ax" x="${x(t)}" y="${H + 10}" text-anchor="middle">${tickLabel(t, t1 - t0)}</text>`).join('') : '';
+    const legend = c.series.length > 1 ? `<span class="lg">${c.series.map(s => `<span><i style="background:${s.color}"></i>${esc(s.label)}</span>`).join('')}</span>` : '';
+    const cur = rows.length ? c.series.map(s => valueOf(s, rows[rows.length - 1], idx)) : [];
+    return `<div class="chart" data-ci="${ci}"><div class="ch"><span><b>${c.title}</b> · ${c.unit}${c.series.length === 1 && cur[0] != null ? ` · now ${fmtNum(cur[0])}` : ''}</span>${legend}</div>
+      <svg viewBox="0 0 ${W} ${H + (last ? 14 : 0)}" height="${H + (last ? 14 : 0)}" role="img" aria-label="${c.title} over time">${grid}${paths}${ticks}<line class="xh" y1="${T}" y2="${H - B}" style="display:none"/><rect x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent" data-hit="1"/></svg></div>`;
+  }).join('');
+  box.dataset.w = W;
+  if (LIVE.hoverT) showHover(LIVE.hoverT);
+}
+function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= v) return m * p; return 10 * p; }
+function fmtNum(v) { return v >= 100 ? Math.round(v) : v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.toFixed(v ? 2 : 0); }
+function timeTicks(t0, t1) {
+  const span = t1 - t0, out = [];
+  const step = span <= 60 ? 15 : span <= 300 ? 60 : span <= 1800 ? 300 : span <= 3600 ? 900 : span <= 21600 ? 3600
+             : span <= 86400 ? 14400 : span <= 604800 ? 86400 : 432000;
+  const tz = new Date().getTimezoneOffset() * 60;          // put day ticks on local midnights
+  for (let t = Math.ceil((t0 - tz) / step) * step + tz; t <= t1; t += step) if (t >= t0) out.push(t);
+  return out;
+}
+function tickLabel(t, span) {
+  const d = new Date(t * 1000);
+  if (span <= 300) return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+  if (span <= 86400) return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+  return d.toLocaleDateString([], {day: 'numeric', month: 'short'});
+}
+const LTIP = document.createElement('div'); LTIP.className = 'ltip'; document.body.appendChild(LTIP);
+function showHover(t, ev) {
+  const box = $('#lv-charts'); if (!box || !LIVE.fields) return;
+  const {idx, t0, t1, rows} = chartData(); if (!rows.length) return;
+  let best = rows[0]; for (const r of rows) if (Math.abs(r[0] - t) < Math.abs(best[0] - t)) best = r;
+  const W = +box.dataset.w, L = 44, R = 8, xx = L + (best[0] - t0) / (t1 - t0) * (W - L - R);
+  $$('#lv-charts .xh').forEach(l => { l.setAttribute('x1', xx); l.setAttribute('x2', xx); l.style.display = ''; });
+  const res = chartData().res, when = new Date(best[0] * 1000);
+  let h = `<div class="tt">${when.toLocaleString([], res >= 60 ? {weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'} : {weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit'})}${res > 60 ? ` · average of ${Math.round(res / 60)} min` : ''}</div>`;
+  for (const c of CHARTS) {
+    for (const s of c.series) { const v = valueOf(s, best, idx); h += `<div class="r"><span>${c.series.length > 1 ? c.title + ' · ' + s.label.toLowerCase() : c.title}</span><b>${v == null ? '—' : fmtNum(v) + ' ' + c.unit}</b></div>`; }
+    for (const [k, lbl] of c.extra || []) h += `<div class="r"><span>&nbsp;&nbsp;${lbl}</span><b>${best[idx[k]] ?? '—'}</b></div>`;
+  }
+  LTIP.innerHTML = h;
+  if (ev) {
+    LTIP.style.display = 'block';
+    const w = LTIP.offsetWidth, hh = LTIP.offsetHeight;
+    LTIP.style.left = (ev.clientX + 16 + w > innerWidth ? ev.clientX - w - 16 : ev.clientX + 16) + 'px';
+    LTIP.style.top = Math.max(8, Math.min(innerHeight - hh - 8, ev.clientY - hh / 2)) + 'px';
+  }
+}
+function hideHover() { LIVE.hoverT = null; LTIP.style.display = 'none'; $$('#lv-charts .xh').forEach(l => l.style.display = 'none'); }
+$('#main').addEventListener('mousemove', e => {
+  const hit = e.target.closest('#lv-charts rect[data-hit]'); if (!hit) return;
+  const box = $('#lv-charts'), svg = hit.ownerSVGElement, rc = svg.getBoundingClientRect();
+  const W = +box.dataset.w, L = 44, R = 8;
+  const px = (e.clientX - rc.left) / rc.width * W;
+  const {t0, t1} = chartData();
+  LIVE.hoverT = t0 + (px - L) / (W - L - R) * (t1 - t0);
+  showHover(LIVE.hoverT, e);
+});
+$('#main').addEventListener('mouseleave', hideHover);
+$('#main').addEventListener('mouseout', e => { if (e.target.closest && e.target.closest('rect[data-hit]') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('rect[data-hit]'))) hideHover(); });
+window.addEventListener('resize', () => TAB === 'live' && drawCharts());
+
+/* ---------- help ---------- */
+function openHelp() {
+  const ib = svg => `<span class="ib">${svg}</span>`;
+  openModal({title: 'How this page works', ok: null, wide: true, body: `<div class="help">
+    <h4>Reading a row</h4><dl>
+      <dt><span class="badge arr">Sonarr</span><span class="badge">Manual</span></dt>
+      <dd><b>Radarr/Sonarr</b>: managed there, so deleting also removes it there and it won't download again. <b>Manual</b>: added by hand, deleted straight from disk.</dd>
+      <dt><span class="badge q">1080p H.264 · 5 GB/h</span></dt>
+      <dd>Quality and size per hour of video. <b>Red</b> above 8 GB/h: a good candidate for a smaller copy.</dd>
+      <dt><span class="badge seed">Seeding</span></dt>
+      <dd>A torrent in qBittorrent still shares the files (hardlinks). Deleting the title removes the torrent too, and any leftover second name in the downloads folder, so the space really comes back.</dd>
+      <dt><span class="chip done">${I.eye}alex</span><span class="chip part">${I.eye}sam 3/10</span></dt>
+      <dd>Who watched it. <b>Green</b>: finished. <b>Amber</b>: partly (episodes or %). Hover for the last play date.</dd>
+      <dt><span class="stale">${I.hourglass}12</span></dt>
+      <dd>Nobody has watched it and it was downloaded over 6 months ago. On shows the number counts such episodes.</dd>
+      <dt><span class="rq-m" style="display:inline">${I.inbox}alex</span></dt>
+      <dd>Who requested it in Seerr. Deleting a whole title clears the request so it can be asked for again.</dd>
+      <dt><b>45.7 GB</b>&nbsp;<small style="color:var(--amber)">frees 12 GB</small></dt>
+      <dd>Size on disk, and how much you actually get back when another hardlinked copy has to stay.</dd>
+    </dl>
+    <h4>Buttons</h4><dl>
+      <dt>${ib(I.unlock)}${ib(I.lock)} Keep</dt>
+      <dd>Protects a title you want to keep. Kept titles and Jellyfin favourites (♥) go to the bottom of the cleanup sorts and need an extra tick before they can be deleted.</dd>
+      <dt>${ib(I.more)} More</dt>
+      <dd><b>Replace with a smaller copy</b>: pick a quality profile; the current file is deleted and Radarr/Sonarr download a new one. <b>Delete watched episodes</b>: removes episodes everyone watching the show has finished. <b>Open in Jellyfin</b>.</dd>
+      <dt>${ib(I.trash)} Delete</dt>
+      <dd>Always shows a preview first: what gets removed in Radarr/Sonarr, qBittorrent and downloads, and how much space comes back.</dd>
+      <dt><input type="checkbox" checked disabled> Select</dt>
+      <dd>Tick several titles or seasons, then <b>Delete selected</b> at the bottom.</dd>
+    </dl>
+    <h4>Tabs</h4><dl>
+      <dt>Downloads</dt>
+      <dd>Torrents in qBittorrent and leftover copies no torrent uses any more. <b>Not in library</b> ones are pure waste. A red <b>Suspicious file</b> is a program or archive pretending to be a video: delete it.</dd>
+      <dt>History</dt>
+      <dd>Everything deleted here. <b>Get it back</b> asks Radarr/Sonarr to download it again.</dd>
+    </dl></div>`});
+}
+$('#help').addEventListener('click', openHelp);
+$('#logout').addEventListener('click', async () => {
+  try { await api('api/logout', {}); } catch (e) {}
+  location.replace('login');
+});
+
+if (['shows', 'downloads', 'history', 'live'].includes(prefs.tab)) setTab(prefs.tab);
+load();
+</script>
+</body>
+</html>

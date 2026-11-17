@@ -1,0 +1,26 @@
+{
+  "title": "Controllarr",
+  "listen": "127.0.0.1",
+  "port": 8790,
+  "base_path": "/controllarr",
+
+  "htpasswd": "",
+  "cookie_secure": true,
+  "session_days": 30,
+
+  "data_dir": "",
+  "downloads_root": "~/downloads",
+  "rebuild_minutes": 30,
+  "stale_days": 182,
+
+  "shared_host": true,
+  "monitor": true,
+  "monitor_disk": "",
+  "monitor_interface": "",
+
+  "jellyfin":    { "url": "http://127.0.0.1:8096",        "api_key": "" },
+  "radarr":      { "url": "http://127.0.0.1:7878",        "api_key": "" },
+  "sonarr":      { "url": "http://127.0.0.1:8989",        "api_key": "" },
+  "seerr":       { "url": "http://127.0.0.1:5055",        "api_key": "" },
+  "qbittorrent": { "url": "http://127.0.0.1:8080",        "username": "admin", "password": "" }
+}

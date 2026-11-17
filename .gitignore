@@ -1,0 +1,20 @@
+# Your settings: API keys and passwords. Never commit this.
+config.json
+
+# State written while running
+cache.json
+keep.json
+history.json
+monitor.json
+sessions.json
+htpasswd
+*.log
+*.tmp
+data/
+
+# Python / editors
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/
