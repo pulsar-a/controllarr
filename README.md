@@ -11,6 +11,35 @@ server, with 30 days of history to find out why things were slow.
 It is a single small Python program (standard library only, no database, no Docker needed) that runs
 next to your apps and stays out of the way: about 0.05% of one CPU core when nobody is looking.
 
+![Movies in poster view, with size on disk, quality and who requested each title](docs/screenshots/movies-posters.webp)
+
+---
+
+## Screenshots
+
+**TV Shows**: seasons expand inside each show. Every row shows quality and GB per hour of video,
+seeding torrents, who has watched how much, and how long ago.
+
+![TV Shows list with one show expanded into seasons](docs/screenshots/tv-shows.webp)
+
+**Delete preview**: every step is listed before anything is removed, with the space it really frees.
+
+![Delete preview listing the Sonarr, Seerr and qBittorrent steps](docs/screenshots/delete-preview.webp)
+
+**Live**: one steady load bar, then tiles for the disk, waiting-on-disk, streaming, qBittorrent and CPU.
+
+![Live tab overview with the server load bar and tiles](docs/screenshots/live-overview.webp)
+
+**Click any tile** to see what is behind the number. On a shared seedbox, other customers' share is
+shown first and striped.
+
+![Shared disk details: who keeps the drive busy, operations per second against the drive's limit, and which of your apps is reading](docs/screenshots/live-disk-details.webp)
+
+**History** of every indicator, from the last minute to the last 30 days. Hover over a chart to compare the
+same moment across all of them.
+
+![Server history charts for disk busy, disk traffic, waiting on the disk and streaming](docs/screenshots/live-history.webp)
+
 ---
 
 ## What you get

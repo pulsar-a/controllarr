@@ -1930,6 +1930,10 @@ class Monitor:
             playing = [s for s in streams or [] if not s["paused"]]
             my_r = sum(g["r"] for g in groups.values())
             my_w = sum(g["w"] for g in groups.values())
+            if disk["r"] is not None:
+                # per-process counters are read a moment after the disk counters and also count other
+                # devices, so a single sample can exceed the disk's own total; yours is part of that total
+                my_r, my_w = min(my_r, disk["r"]), min(my_w, disk["w"])
             snap = {
                 "t": c["t"], "interval": round(dt, 1) if dt else None, "disk_name": self.disk,
                 "disk_rotational": self.rotational, "shared": SHARED_HOST,
